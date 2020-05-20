@@ -1,0 +1,50 @@
+.card {
+    width: 10rem;
+    height: 14rem;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+    border-radius: 10px;
+    position: absolute;
+    transition: margin-right 0.4s ease;
+    /*right: 1px;*/
+}
+
+.size-item-icon-up {
+    font-size: 2rem;
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+}
+
+.size-item-value-up {
+    font-size: 1.5rem;
+    position: absolute;
+    left: 1.1rem;
+}
+
+.size-item-icon-down {
+    font-size: 2rem;
+    position: absolute;
+    top: 10rem;
+    right: 1rem;
+}
+
+.size-item-value-down {
+    font-size: 1.5rem;
+    position: absolute;
+    top: 12rem;
+    right: 1.1rem;
+}
+
+.body-card-item {
+    padding: 0 2rem;;
+    height: 100%;
+    /*flex-direction: column;*/
+    flex-wrap: wrap;
+}
+
+.icon {
+    /*padding-left:1rem;*/
+    font-size: 3rem;
+    position: relative;
+    overflow: hidden;
+}

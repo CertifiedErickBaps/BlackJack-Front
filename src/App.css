@@ -1,38 +1,29 @@
-.App {
-  text-align: center;
+.logo {
+    width: 12%;
+    position: absolute;
+    top: 3%;
+    z-index: 1;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.flex-align-center {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.nav-color {
+    background-color: #ff5959;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.nav-color ul li a{
+    color: black;
 }
 
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.jugadores-number {
+    padding: 0.5rem;
+    /*border: 2px solid;*/
+    /*color: #49beb7;*/
+    border-radius: 0.8rem;
+    background-color: #fccf4d;
 }
