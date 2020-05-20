@@ -8,6 +8,10 @@
     /*right: 1px;*/
 }
 
+.color-red {
+    color: red;
+}
+
 .size-item-icon-up {
     font-size: 2rem;
     position: absolute;

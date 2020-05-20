@@ -8,7 +8,7 @@ class Card extends Component {
         this.state = {
             mazo: "♦",
             valor: 9,
-            color: "red"
+            red: true
         }
     }
 
@@ -18,19 +18,19 @@ class Card extends Component {
         const items = [];
         for (let i = 0; i < this.state.valor; i++) {
             items.push(
-                <div className="icon">{this.state.mazo}</div>
+                <div className={(this.state.red) ? "icon color-red" : "icon"}>{this.state.mazo}</div>
             )
         }
         return (
             <div>
                 <div className="card">
-                    <span className="size-item-value-up">{this.state.valor}</span>
-                    <span className="size-item-icon-up">{this.state.mazo}</span>
+                    <span className={(this.state.red) ? "size-item-value-up color-red" : "size-item-value-up"}>{this.state.valor}</span>
+                    <span className={(this.state.red) ? "size-item-icon-up color-red" : "size-item-icon-up"}>{this.state.mazo}</span>
                     <div className="body-card-item flex-align-center">
                         {items}
                     </div>
-                    <span className="size-item-icon-down">{this.state.mazo}</span>
-                    <span className="size-item-value-down">{this.state.valor}</span>
+                    <span className={(this.state.red) ? "size-item-icon-down color-red" : "size-item-icon-down"}>{this.state.mazo}</span>
+                    <span className={(this.state.red) ? "size-item-value-down color-red" : "size-item-value-down"}>{this.state.valor}</span>
                 </div>
             </div>
         );
