@@ -6,16 +6,21 @@ class Naipes extends Component {
     constructor() {
         super();
         this.state = {
+            left_card: 3,
+            right_card: 3,
             input: "",
             wallet: 100,
             score_jugador: 1,
-            score_casa: 1
+            score_casa: 1,
         };
     };
 
     //Evento para pedir otra carta aletoria
     handleEventCard = (e) => {
-        console.log("Card Clicked to Insert in hand");
+        // console.log("Card Clicked to Insert in hand");
+        this.setState((prevState) => ({
+            right_card: prevState.right_card + 3
+        }));
     };
 
     //Evento para obtener el input del usuario
@@ -34,25 +39,41 @@ class Naipes extends Component {
     };
 
     render() {
-        console.log(this.state.input);
+        // let {right_card} = this.state;
+        // let addRight = {
+        //     right: `${right_card}rem`
+        // };
+
+        let cartasJugador;
+        if (this.props.jugador != null) {
+            let space = -3;
+            cartasJugador = this.props.jugador.mano.map((carta, i) => {
+                space+=3;
+                return (<Card key={i} value={carta.carta} visible={carta.visible} style={{right: `${space}rem`}} styleCard="naipe-selectionR"/>);
+            });
+        }
+        let cartasCroupier;
+        if(this.props.croupier != null) {
+            let space = -3;
+            cartasCroupier = this.props.croupier.mano.map((carta, i) => {
+                space+=3;
+                return (<Card key={i} value={carta.carta} visible={carta.visible} style={{left: `${space}rem`}} styleCard="naipe-selectionL"/>);
+            });
+        }
+
+
         return (
             <>
                 <div className="wrapper">
                     <div className="naipesL">
-                        <div className="naipe-selectionL"/>
-                        <div className="naipe-selectionL"/>
-                        <div className="naipe-selectionL"/>
-                        <div className="naipe-selectionL"/>
+                        {cartasCroupier}
                         <span className="casa">
                             <h5>Score 12</h5>
                         </span>
                     </div>
 
                     <div className="naipesR">
-                        <div className="naipe-selectionR"/>
-                        <div className="naipe-selectionR"/>
-                        <div className="naipe-selectionR"/>
-                        <div onClick={this.handleEventCard} className="naipe-selectionR"/>
+                        {cartasJugador}
                         <span className="jugador">
                             <h5>Score 17</h5>
                         </span>
@@ -86,9 +107,6 @@ class Naipes extends Component {
                         </button>
                     </div>
 
-                </div>
-                <div className="container">
-                    <Card/>
                 </div>
             </>
         );

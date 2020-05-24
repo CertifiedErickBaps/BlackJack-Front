@@ -57,24 +57,25 @@ section {
 }
 
 .naipe-selectionL {
+    background-color: white;
     width: 10rem;
     height: 14rem;
     box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
     border-radius: 10px;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-image: url("../img/naipe_back.jpg");
+    /*background-size: contain;*/
+    /*background-repeat: no-repeat;*/
+    /*background-image: url("../img/naipe_back.jpg");*/
     position: absolute;
     transition: margin-left 0.4s ease;
-    left: 1px;
+    left: 3rem;
     /*top: 4rem;*/
 }
 
 .naipe-selectionL:active {
     z-index: 1;
 }
-
-.naipe-selectionL:hover:nth-child(4) {
+/*:nth-child(4)*/
+.naipe-selectionL:hover {
     margin-left: 2rem;
     /*    transform: rotate(-18deg);*/
 }
@@ -100,19 +101,20 @@ section {
     height: 14rem;
     box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
     border-radius: 10px;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-image: url("../img/naipe_back.jpg");
+    background-color: white;
+    /*background-size: contain;*/
+    /*background-repeat: no-repeat;*/
+    /*background-image: url("../img/naipe_back.jpg");*/
     position: absolute;
     transition: margin-right 0.4s ease;
-    right: 1px;
+    right: 3rem;
 }
 
 .naipe-selectionR:active {
     z-index: 1;
 }
-
-.naipe-selectionR:hover:nth-child(4) {
+/*:nth-child(4)*/
+.naipe-selectionR:hover {
     margin-right: 2rem;
     /*    transform: rotate(-18deg);*/
 }
