@@ -1,81 +1,117 @@
-import React, {Component} from "react";
-import "./Naipes.css";
-import Card from "./Card";
+import React, {Component} from 'react'
+import '../css/Naipes.css'
+import Card from './Card'
+import Axios from 'axios'
 
 class Naipes extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+
+        super(props)
+
         this.state = {
             left_card: 3,
             right_card: 3,
             input: "",
             wallet: 100,
-            score_jugador: 1,
-            score_casa: 1,
-        };
-    };
+            score_jugador: 0,
+            score_casa: 0,
+        }
 
-    //Evento para pedir otra carta aletoria
-    handleEventCard = (e) => {
-        // console.log("Card Clicked to Insert in hand");
+    }
+
+    /** Evento para pedir otra carta aletoria */
+    handleEventCard = (evt) => {
+
         this.setState((prevState) => ({
             right_card: prevState.right_card + 3
-        }));
+        }))
+
     };
 
-    //Evento para obtener el input del usuario
-    handleInputWallet = (e) => {
+    /** Evento para obtener el input del usuario */
+    handleInputWallet = (evt) => {
+
+        evt.preventDefault()
+
         this.setState({
-            input: e.target.value,
-        });
-    };
+            input: evt.target.value,
+        })
 
-    //Evento para restar al wallet
+    }
+
+    /** Evento para restar al wallet */
     handleWallet = () => {
         //Checa que el wallet no sea negativo y que lo que pueda apostar el usuario no sea mayor a lo que tiene actualmente.
         if (!(this.state.wallet < 0) && (this.state.input <= this.state.wallet)) {
             this.setState({wallet: this.state.wallet - this.state.input,});
         }
-    };
+    }
+
+    createCards = (rol, side) => {
+
+        let cartas
+        if (rol != null) {
+
+            let space = -3
+
+            cartas = rol.mano.map((carta, i) => {
+
+                space += 3
+                return side ?
+                    (<Card key={i} value={carta.carta} visible={carta.visible} style={{left: `${space}rem`}} styleCard="naipe-selectionL"/>) :
+                    (<Card key={i} value={carta.carta} visible={carta.visible} style={{right: `${space}rem`}} styleCard="naipe-selectionR"/>)
+
+            })
+
+        }
+
+        return cartas
+
+    }
+
+    getScore = (rol, rolID) => {
+
+        if (rolID !== null) {
+
+            Axios.post(`http://${process.env.REACT_APP_LOCALHOST}/evaluar-mano`, {
+                id: rolID
+            }).then((res) => {
+
+                this.setState({[rol]: res.data.valor})
+
+            }).catch((err) => {
+
+                console.log(err)
+
+            })
+
+        }
+
+    }
 
     render() {
-        // let {right_card} = this.state;
-        // let addRight = {
-        //     right: `${right_card}rem`
-        // };
 
-        let cartasJugador;
-        if (this.props.jugador != null) {
-            let space = -3;
-            cartasJugador = this.props.jugador.mano.map((carta, i) => {
-                space+=3;
-                return (<Card key={i} value={carta.carta} visible={carta.visible} style={{right: `${space}rem`}} styleCard="naipe-selectionR"/>);
-            });
-        }
-        let cartasCroupier;
-        if(this.props.croupier != null) {
-            let space = -3;
-            cartasCroupier = this.props.croupier.mano.map((carta, i) => {
-                space+=3;
-                return (<Card key={i} value={carta.carta} visible={carta.visible} style={{left: `${space}rem`}} styleCard="naipe-selectionL"/>);
-            });
-        }
+        const {jugador, croupier} = this.props
+        const {score_jugador, score_casa} = this.state
 
+        /** Izquierda es true y derecha es false */
+        let cartasJugador = this.createCards(jugador, false)
+        let cartasCroupier = this.createCards(croupier, true)
 
         return (
             <>
                 <div className="wrapper">
-                    <div className="naipesL">
+                    <div className="naipesL" onClick={() => this.getScore('score_casa', croupier.id)}>
                         {cartasCroupier}
                         <span className="casa">
-                            <h5>Score 12</h5>
+                            <h5>Score {score_casa}</h5>
                         </span>
                     </div>
 
-                    <div className="naipesR">
+                    <div className="naipesR" onClick={() => this.getScore('score_jugador', jugador.id)}>
                         {cartasJugador}
                         <span className="jugador">
-                            <h5>Score 17</h5>
+                            <h5>Score {score_jugador}</h5>
                         </span>
                     </div>
                 </div>

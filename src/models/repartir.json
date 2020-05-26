@@ -1,0 +1,28 @@
+{
+  "croupier": {
+    "id": "13enqz5drkao0tdvs",
+    "mano": [
+      {
+        "carta": "t10",
+        "visible": false
+      },
+      {
+        "carta": "p5",
+        "visible": true
+      }
+    ]
+  },
+  "jugador": {
+    "id": "13enqz5drkao0tdvt",
+    "mano": [
+      {
+        "carta": "dK",
+        "visible": true
+      },
+      {
+        "carta": "tJ",
+        "visible": true
+      }
+    ]
+  }
+}

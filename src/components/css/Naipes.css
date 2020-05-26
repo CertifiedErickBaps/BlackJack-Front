@@ -62,13 +62,26 @@ section {
     height: 14rem;
     box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
     border-radius: 10px;
-    /*background-size: contain;*/
-    /*background-repeat: no-repeat;*/
-    /*background-image: url("../img/naipe_back.jpg");*/
+/*    background-size: contain;
+    background-repeat: no-repeat;
+    background-image: url("../../img/naipe_back.jpg");*/
     position: absolute;
     transition: margin-left 0.4s ease;
     left: 3rem;
-    /*top: 4rem;*/
+}
+
+.naipe-selectionL-hidden {
+    background-color: white;
+    width: 10rem;
+    height: 14rem;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+    border-radius: 10px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-image: url("../../img/naipe_back.jpg");
+    position: absolute;
+    transition: margin-left 0.4s ease;
+    left: 3rem;
 }
 
 .naipe-selectionL:active {
@@ -78,6 +91,14 @@ section {
 .naipe-selectionL:hover {
     margin-left: 2rem;
     /*    transform: rotate(-18deg);*/
+}
+
+.naipe-selectionL:active {
+    z-index: 1;
+}
+
+.naipe-selectionL-hidden:hover {
+    margin-left: 2rem;
 }
 
 .naipesR {

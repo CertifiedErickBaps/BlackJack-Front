@@ -1,21 +1,18 @@
-import React, {Component} from "react";
-
-import { Redirect } from "react-router-dom";
-import Axios from 'axios';
-import M from "materialize-css";
-import "./Login.css";
-
-
+import React, {Component} from 'react'
+import {Redirect} from 'react-router-dom'
+import Axios from 'axios'
+import Materialize from "materialize-css"
+import '../css/Login.css'
 
 class Login extends Component {
 
     constructor(props) {
 
-        super(props);
+        super(props)
 
         this.state = {
-            nombre: "",
-            multijugador: "",
+            nombre: '',
+            multijugador: 'false',
             redirect: false,
         }
 
@@ -24,51 +21,50 @@ class Login extends Component {
     componentDidMount() {
 
         /** Initialize the animations of materialize */
-        M.AutoInit()
+        Materialize.AutoInit()
 
     }
 
     loginUsuario = () => {
+
         /** Comunicacion con el servidor */
-        const {nombre, multijugador} = this.state;
+        const {nombre, multijugador} = this.state
+
         Axios.post(`http://${process.env.REACT_APP_LOCALHOST}/crear-partida`, {
             nombre: nombre,
             multijugador: multijugador === 'true'
-        }).then((res) => {
-            const {id_partida, multijugador} = res.data;
-            console.log(id_partida, multijugador);
-
         }).then(() => {
+
+            this.setState({redirect: true})
+
+        }).catch(() => {
+
+            console.info('error conection with server, init debugging')
+
             this.setState({
+                nombre: 'SkDv',
                 redirect: true
-            });
-        }).catch((err) => {
+            })
 
-            console.log(err)
+        })
 
-        });
-    };
+
+    }
 
     handleInput = (evt) => {
 
-        evt.preventDefault();
+        evt.preventDefault()
+        const {value, name} = evt.target
+        this.setState({[name]: value})
 
-        const {value, name} = evt.target;
-
-        this.setState({[name]: value});
-
-    };
+    }
 
 
     render() {
-        const {redirect, multijugador} = this.state;
-        if(redirect) {
-            // console.log(this.state.redirect);
-            return <Redirect push to={{
-                pathname: "/jugar-partida",
-                state: {multijugador: multijugador}
-            }}/>;
-        }
+
+        const {redirect, nombre, multijugador} = this.state
+
+        let disabled = !nombre || !multijugador
 
         return (
             <>
@@ -83,21 +79,26 @@ class Login extends Component {
                         <div className="row">
                             <div className="input-field col s12">
                                 <select name="multijugador" onChange={this.handleInput}>
-                                    <option disabled selected>Choose your option</option>
+                                    <option selected disabled>Choose your option</option>
                                     <option value={true} className="white">Si</option>
                                     <option value={false} className="red-text">No</option>
                                 </select>
                                 <label>Multijugador</label>
                             </div>
                         </div>
-                        <button type="submit" disabled={(!this.state.nombre || !this.state.multijugador)} className="waves-effect waves-light btn"  onClick={this.loginUsuario}>
+                        <button type="submit" disabled={disabled} className="waves-effect waves-light btn"
+                                onClick={this.loginUsuario}>
                             Entrar
                         </button>
                     </div>
                 </div>
+                {redirect && (<Redirect push to={{
+                    pathname: "/jugar-partida",
+                    multijugador: multijugador
+                }}/>)}
             </>
-        );
+        )
     }
 }
 
-export default Login;
+export default Login
