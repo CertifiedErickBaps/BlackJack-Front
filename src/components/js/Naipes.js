@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import '../css/Naipes.css'
 import Card from './Card'
 import Axios from 'axios'
+import swal from 'sweetalert'
 
 class Naipes extends Component {
     constructor(props) {
@@ -11,8 +12,8 @@ class Naipes extends Component {
         this.state = {
             left_card: 3,
             right_card: 3,
-            input: "",
-            wallet: 100,
+            bet: "",
+            credit: 100,
             score_jugador: 0,
             score_casa: 0,
         }
@@ -29,22 +30,39 @@ class Naipes extends Component {
     };
 
     /** Evento para obtener el input del usuario */
-    handleInputWallet = (evt) => {
+    handleInputBet = (evt) => {
 
         evt.preventDefault()
 
         this.setState({
-            input: evt.target.value,
+            bet: parseInt(evt.target.value),
         })
 
     }
 
     /** Evento para restar al wallet */
     handleWallet = () => {
-        //Checa que el wallet no sea negativo y que lo que pueda apostar el usuario no sea mayor a lo que tiene actualmente.
-        if (!(this.state.wallet < 0) && (this.state.input <= this.state.wallet)) {
-            this.setState({wallet: this.state.wallet - this.state.input,});
+        const {credit, bet} = this.state
+
+        if (bet >= credit) swal('¡Ops!', 'No puedes apostar un monto mayor al crédito', 'error')
+        else if (bet < 0)swal('¡Ops!', 'No puedes ingresar número negativo', 'error')
+        else {
+            const {jugador} = this.props
+
+            Axios.post(`http://${process.env.REACT_APP_LOCALHOST}/apostar`, {
+                id: jugador.id,
+                cantidad: bet
+            }).then((res) => {
+
+                this.setState({credit: res.data.nuevo_credito, bet: ""})
+
+            }).catch((err) => {
+
+                console.log(err)
+
+            })
         }
+
     }
 
     createCards = (rol, side) => {
@@ -92,7 +110,7 @@ class Naipes extends Component {
     render() {
 
         const {jugador, croupier} = this.props
-        const {score_jugador, score_casa} = this.state
+        const {score_jugador, score_casa, credit, bet} = this.state
 
         /** Izquierda es true y derecha es false */
         let cartasJugador = this.createCards(jugador, false)
@@ -117,16 +135,16 @@ class Naipes extends Component {
                 </div>
                 <div className="container row">
                     <div className="col m4 s12 center-align">
-                        <h5>Creditos: {this.state.wallet}$</h5>
+                        <h5>Creditos: {credit}$</h5>
                     </div>
                     <div className="col m4 s12 center-align">
-                        <span>You win 12-18</span>
+                        <span>{}</span>
                     </div>
                 </div>
                 <div className="container row flex-align-center">
                     <div className="col m4 s12 flex-align-center">
                         <div className="input-field">
-                            <input type="number" onChange={this.handleInputWallet}/>
+                            <input value={bet} type="number" onChange={this.handleInputBet}/>
                         </div>
                         <button onClick={this.handleWallet} className="waves-effect waves-light btn">
                             Apostar
