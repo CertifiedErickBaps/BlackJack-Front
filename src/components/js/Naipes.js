@@ -68,8 +68,13 @@ class Naipes extends Component {
     }
 
     evaluarPartida = () => {
-        const {score_jugador, score_casa, credit, bet} = this.state
-        if (score_jugador >= 21) swal("Oops perdiste!", 'Rebasaste la casa o tienes mas de 21 en tu mano qlo', 'error')
+        const {setVisibleCard} = this.props
+        const {score_jugador} = this.state
+
+        if (score_jugador >= 21) {
+            swal("Oops perdiste!", 'Rebasaste la casa o tienes mas de 21 en tu mano qlo', 'error')
+            setVisibleCard()
+        }
     }
 
     getScore = (rol, rolID) => {
@@ -86,14 +91,14 @@ class Naipes extends Component {
     }
 
     getCard = (rolID) => {
-        const {jugador} = this.state
+        const {jugador, setPlayerHand} = this.props
+
         if (rolID !== null) {
             Axios.post(`http://${process.env.REACT_APP_LOCALHOST}/pedir`, {
                 id: rolID
             }).then((res) => {
-                console.log(res)
-                this.props.setPlayerHand(res.data.mano)
-                this.getScore("score_jugador", jugador.id)
+                setPlayerHand(res.data.mano)
+                this.getScore('score_jugador', jugador.id)
             }).catch((err) => {
                 console.log(err)
             })

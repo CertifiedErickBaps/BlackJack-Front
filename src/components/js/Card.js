@@ -5,7 +5,6 @@ import '../css/Naipes.css'
 class Card extends Component {
 
     constructor(props) {
-
         super(props)
 
         this.state = {
@@ -13,15 +12,12 @@ class Card extends Component {
             valor: 0,
             red: true,
         }
-
     }
 
     componentDidMount() {
-
         const {visible} = this.props
 
         if (visible != null) {
-
             let {value, visible} = this.props
 
             this.setState({
@@ -29,15 +25,13 @@ class Card extends Component {
                 valor: value.substring(1, value.length),
                 visible: visible
             })
-
         }
-
     }
 
     render() {
-
         const {visible} = this.state
         const {style} = this.props
+
 
         if (!visible) {
 
@@ -71,7 +65,6 @@ class Card extends Component {
                     <span className={value_down}>{valor}</span>
                 </div>
             )
-
         }
     }
 }

@@ -30,10 +30,15 @@ class Game extends Component {
         })
     }
 
+    setVisibleCard = () => {
+        let copy = this.state.croupier
+        copy.mano.forEach((carta) => {
+            carta.visible = true
+        })
+        this.setState({croupier: copy})
+    }
+
     render() {
-        if (this.state.jugador !== undefined) {
-            console.log(this.state.jugador.mano);
-        }
         const {jugador, croupier, multijugador} = this.state
 
         let exist = (rol) => {
@@ -45,6 +50,13 @@ class Game extends Component {
 
         let jugadores = multijugador ? (<span className="jugadores-number">2</span>) : (
             <span className="jugadores-number">1</span>)
+
+        const naipesProps = {
+            jugador: jugador_card,
+            croupier: croupier_card,
+            setPlayerHand: this.setPlayerHand,
+            setVisibleCard: this.setVisibleCard
+        }
 
         return (
             <>
@@ -60,7 +72,7 @@ class Game extends Component {
                         </ul>
                     </div>
                 </nav>
-                <Naipes setPlayerHand={this.setPlayerHand} jugador={jugador_card} croupier={croupier_card}/>
+                <Naipes {...naipesProps}/>
             </>
         )
     }
