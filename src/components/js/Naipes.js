@@ -20,24 +20,14 @@ class Naipes extends Component {
 
     }
 
-    /** Evento para pedir otra carta aletoria */
-    handleEventCard = (evt) => {
-
-        this.setState((prevState) => ({
-            right_card: prevState.right_card + 3
-        }))
-
-    };
 
     /** Evento para obtener el input del usuario */
     handleInputBet = (evt) => {
-
         evt.preventDefault()
 
         this.setState({
             bet: parseInt(evt.target.value),
         })
-
     }
 
     /** Evento para restar al wallet */
@@ -53,62 +43,55 @@ class Naipes extends Component {
                 id: jugador.id,
                 cantidad: bet
             }).then((res) => {
-
-                this.setState({credit: res.data.nuevo_credito, bet: ""})
-
+                this.setState({credit: res.data.credito, bet: ""})
             }).catch((err) => {
-
                 console.log(err)
-
             })
         }
 
     }
 
     createCards = (rol, side) => {
-
         let cartas
         if (rol != null) {
-
             let space = -3
 
             cartas = rol.mano.map((carta, i) => {
-
                 space += 3
                 return side ?
                     (<Card key={i} value={carta.carta} visible={carta.visible} style={{left: `${space}rem`}} styleCard="naipe-selectionL"/>) :
                     (<Card key={i} value={carta.carta} visible={carta.visible} style={{right: `${space}rem`}} styleCard="naipe-selectionR"/>)
-
             })
-
         }
 
         return cartas
-
     }
 
     getScore = (rol, rolID) => {
-
         if (rolID !== null) {
-
             Axios.post(`http://${process.env.REACT_APP_LOCALHOST}/evaluar-mano`, {
                 id: rolID
             }).then((res) => {
-
                 this.setState({[rol]: res.data.valor})
-
             }).catch((err) => {
-
                 console.log(err)
-
             })
-
         }
+    }
 
+    getCard = (rolID) => {
+        if (rolID !== null) {
+            Axios.post(`http://${process.env.REACT_APP_LOCALHOST}/pedir`, {
+                id: rolID
+            }).then((res) => {
+                console.log(res)
+            }).catch((err) => {
+                console.log(err)
+            })
+        }
     }
 
     render() {
-
         const {jugador, croupier} = this.props
         const {score_jugador, score_casa, credit, bet} = this.state
 
@@ -151,7 +134,7 @@ class Naipes extends Component {
                         </button>
                     </div>
                     <div className="col m4 s12 center-align">
-                        <button onClick={this.handleEventCard} className="waves-effect waves-light btn">
+                        <button onClick={() => this.getCard(jugador.id)} className="waves-effect waves-light btn">
                             Pedir
                         </button>
                     </div>
@@ -163,8 +146,8 @@ class Naipes extends Component {
 
                 </div>
             </>
-        );
+        )
     }
 }
 
-export default Naipes;
+export default Naipes

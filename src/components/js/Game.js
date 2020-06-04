@@ -7,38 +7,28 @@ import repartir from '../../models/repartir.json'
 class Game extends Component {
 
     constructor(props) {
-
         super(props)
         this.state = {}
-
     }
 
     componentDidMount() {
-
         if (!Object.keys(this.state).length) {
-
             Axios.get(`http://${process.env.REACT_APP_LOCALHOST}/iniciar`).then((res) => {
-
                 console.log(res.data)
                 this.setState(res.data)
-
             }).catch(() => {
-
                 this.setState(repartir)
-
             })
-
         }
-
     }
 
     render() {
-
         const {jugador, croupier, multijugador} = this.state
 
         let exist = (rol) => {
             return rol != null
         }
+
         let jugador_card = exist(jugador) ? jugador : null
         let croupier_card = exist(croupier) ? croupier : null
 
@@ -60,7 +50,7 @@ class Game extends Component {
                 </nav>
                 <Naipes jugador={jugador_card} croupier={croupier_card}/>
             </>
-        );
+        )
     }
 }
 
