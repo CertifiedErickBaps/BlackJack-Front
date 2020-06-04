@@ -14,7 +14,7 @@ class Game extends Component {
     componentDidMount() {
         if (!Object.keys(this.state).length) {
             Axios.get(`http://${process.env.REACT_APP_LOCALHOST}/iniciar`).then((res) => {
-                console.log(res.data)
+                console.log(res.data);
                 this.setState(res.data)
             }).catch(() => {
                 this.setState(repartir)
@@ -22,7 +22,18 @@ class Game extends Component {
         }
     }
 
+    setPlayerHand = (hand) => {
+        let copy = this.state.jugador;
+        copy.mano = hand;
+        this.setState({
+            jugador: copy
+        })
+    }
+
     render() {
+        if (this.state.jugador !== undefined) {
+            console.log(this.state.jugador.mano);
+        }
         const {jugador, croupier, multijugador} = this.state
 
         let exist = (rol) => {
@@ -32,7 +43,8 @@ class Game extends Component {
         let jugador_card = exist(jugador) ? jugador : null
         let croupier_card = exist(croupier) ? croupier : null
 
-        let jugadores = multijugador ? (<span className="jugadores-number">2</span>) : (<span className="jugadores-number">1</span>)
+        let jugadores = multijugador ? (<span className="jugadores-number">2</span>) : (
+            <span className="jugadores-number">1</span>)
 
         return (
             <>
@@ -48,7 +60,7 @@ class Game extends Component {
                         </ul>
                     </div>
                 </nav>
-                <Naipes jugador={jugador_card} croupier={croupier_card}/>
+                <Naipes setPlayerHand={this.setPlayerHand} jugador={jugador_card} croupier={croupier_card}/>
             </>
         )
     }

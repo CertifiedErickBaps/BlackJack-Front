@@ -67,12 +67,18 @@ class Naipes extends Component {
         return cartas
     }
 
+    evaluarPartida = () => {
+        const {score_jugador, score_casa, credit, bet} = this.state
+        if (score_jugador >= 21) swal("Oops perdiste!", 'Rebasaste la casa o tienes mas de 21 en tu mano qlo', 'error')
+    }
+
     getScore = (rol, rolID) => {
         if (rolID !== null) {
             Axios.post(`http://${process.env.REACT_APP_LOCALHOST}/evaluar-mano`, {
                 id: rolID
             }).then((res) => {
                 this.setState({[rol]: res.data.valor})
+                this.evaluarPartida()
             }).catch((err) => {
                 console.log(err)
             })
@@ -80,16 +86,21 @@ class Naipes extends Component {
     }
 
     getCard = (rolID) => {
+        const {jugador} = this.state
         if (rolID !== null) {
             Axios.post(`http://${process.env.REACT_APP_LOCALHOST}/pedir`, {
                 id: rolID
             }).then((res) => {
                 console.log(res)
+                this.props.setPlayerHand(res.data.mano)
+                this.getScore("score_jugador", jugador.id)
             }).catch((err) => {
                 console.log(err)
             })
         }
     }
+
+
 
     render() {
         const {jugador, croupier} = this.props
@@ -134,12 +145,12 @@ class Naipes extends Component {
                         </button>
                     </div>
                     <div className="col m4 s12 center-align">
-                        <button onClick={() => this.getCard(jugador.id)} className="waves-effect waves-light btn">
+                        <button onClick={() => this.getCard(jugador.id)} className="waves-effect waves-light btn" disabled={credit === 100}>
                             Pedir
                         </button>
                     </div>
                     <div className="col m4 s12 center-align">
-                        <button className="waves-effect waves-light btn">
+                        <button className="waves-effect waves-light btn" disabled={credit === 100}>
                             Plantarse
                         </button>
                     </div>
