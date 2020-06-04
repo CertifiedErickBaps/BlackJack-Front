@@ -30,12 +30,12 @@ class Game extends Component {
         })
     }
 
-    setVisibleCard = () => {
-        let copy = this.state.croupier
-        copy.mano.forEach((carta) => {
-            carta.visible = true
+    setCroupierHand = (hand) => {
+        let copy = this.state.croupier;
+        copy.mano = hand;
+        this.setState({
+            croupier: copy
         })
-        this.setState({croupier: copy})
     }
 
     render() {
@@ -55,7 +55,7 @@ class Game extends Component {
             jugador: jugador_card,
             croupier: croupier_card,
             setPlayerHand: this.setPlayerHand,
-            setVisibleCard: this.setVisibleCard
+            setCroupierHand: this.setCroupierHand,
         }
 
         return (

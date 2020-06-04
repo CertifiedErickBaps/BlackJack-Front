@@ -16,6 +16,7 @@ class Card extends Component {
 
     componentDidMount() {
         const {visible} = this.props
+        console.log(visible);
 
         if (visible != null) {
             let {value, visible} = this.props
@@ -29,43 +30,39 @@ class Card extends Component {
     }
 
     render() {
-        const {visible} = this.state
-        const {style} = this.props
+        const {style, visible} = this.props
 
+        const {palo, valor, red} = this.state
+        const {styleCard} = this.props
 
-        if (!visible) {
+        let icon = palo === 'c' ? '♥' : palo === 'd' ? '♦' : palo === 'p' ? '♠' : '♣'
 
-            return(<div className="naipe-selectionL-hidden" style={style}/>)
+        let icon_color = red ? "icon color-red" : "icon",
+            value_up = red ? "size-item-value-up color-red" : "size-item-value-up",
+            icon_up = red ? "size-item-icon-up color-red" : "size-item-icon-up",
+            value_down = red ? "size-item-value-down color-red" : "size-item-value-down",
+            icon_down = red ? "size-item-icon-down color-red" : "size-item-icon-down"
 
-        } else {
+        const items = []
 
-            const {palo, valor, red} = this.state
-            const {styleCard} = this.props
+        for (let i = 0; i < valor; i++) items.push(<div key={i} className={icon_color}>{icon}</div>)
 
-            let icon = palo === 'c' ? '♥' : palo === 'd' ? '♦' : palo === 'p' ? '♠' : '♣'
+        return (
+            <div style={style} className={styleCard}>
+                {visible && (
+                    <>
+                        <span className={value_up}>{valor}</span>
+                        <span className={icon_up}>{icon}</span>
+                        <div className="body-card-item flex-align-center">
+                            {items}
+                        </div>
+                        <span className={icon_down}>{icon}</span>
+                        <span className={value_down}>{valor}</span>
+                    </>
+                )}
 
-            let icon_color = red ? "icon color-red" : "icon",
-                value_up = red ? "size-item-value-up color-red" : "size-item-value-up",
-                icon_up = red ? "size-item-icon-up color-red" : "size-item-icon-up",
-                value_down = red ? "size-item-value-down color-red" : "size-item-value-down",
-                icon_down = red ? "size-item-icon-down color-red" : "size-item-icon-down"
-
-            const items = []
-
-            for (let i = 0; i < valor; i++) items.push(<div key={i} className={icon_color}>{icon}</div>)
-
-            return (
-                <div style={style} className={styleCard}>
-                    <span className={value_up}>{valor}</span>
-                    <span className={icon_up}>{icon}</span>
-                    <div className="body-card-item flex-align-center">
-                        {items}
-                    </div>
-                    <span className={icon_down}>{icon}</span>
-                    <span className={value_down}>{valor}</span>
-                </div>
-            )
-        }
+            </div>
+        )
     }
 }
 

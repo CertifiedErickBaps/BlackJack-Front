@@ -35,7 +35,7 @@ class Naipes extends Component {
         const {credit, bet} = this.state
 
         if (bet >= credit) swal('¡Ops!', 'No puedes apostar un monto mayor al crédito', 'error')
-        else if (bet < 0)swal('¡Ops!', 'No puedes ingresar número negativo', 'error')
+        else if (bet < 0) swal('¡Ops!', 'No puedes ingresar número negativo', 'error')
         else {
             const {jugador} = this.props
 
@@ -59,8 +59,10 @@ class Naipes extends Component {
             cartas = rol.mano.map((carta, i) => {
                 space += 3
                 return side ?
-                    (<Card key={i} value={carta.carta} visible={carta.visible} style={{left: `${space}rem`}} styleCard="naipe-selectionL"/>) :
-                    (<Card key={i} value={carta.carta} visible={carta.visible} style={{right: `${space}rem`}} styleCard="naipe-selectionR"/>)
+                    (<Card key={i} value={carta.carta} visible={carta.visible} style={{left: `${space}rem`}}
+                           styleCard={carta.visible ? "naipe-selectionL": "naipe-selectionL-hidden"}/>) :
+                    (<Card key={i} value={carta.carta} visible={carta.visible} style={{right: `${space}rem`}}
+                           styleCard="naipe-selectionR"/>)
             })
         }
 
@@ -68,12 +70,10 @@ class Naipes extends Component {
     }
 
     evaluarPartida = () => {
-        const {setVisibleCard} = this.props
         const {score_jugador} = this.state
 
         if (score_jugador >= 21) {
             swal("Oops perdiste!", 'Rebasaste la casa o tienes mas de 21 en tu mano qlo', 'error')
-            setVisibleCard()
         }
     }
 
@@ -91,7 +91,7 @@ class Naipes extends Component {
     }
 
     getCard = (rolID) => {
-        const {jugador, setPlayerHand} = this.props
+        const {jugador, setPlayerHand, setCroupierHand} = this.props
 
         if (rolID !== null) {
             Axios.post(`http://${process.env.REACT_APP_LOCALHOST}/pedir`, {
@@ -99,12 +99,23 @@ class Naipes extends Component {
             }).then((res) => {
                 setPlayerHand(res.data.mano)
                 this.getScore('score_jugador', jugador.id)
+                this.getEvaluarPartida()
             }).catch((err) => {
                 console.log(err)
             })
         }
     }
 
+    getEvaluarPartida = () => {
+        const {setCroupierHand} = this.props
+        Axios.get(`http://${process.env.REACT_APP_LOCALHOST}/evaluar-partida`)
+            .then((res) => {
+                setCroupierHand(res.data.mano)
+                console.log(res)
+            }).catch((err) => {
+            console.log(err)
+        })
+    }
 
 
     render() {
@@ -150,7 +161,8 @@ class Naipes extends Component {
                         </button>
                     </div>
                     <div className="col m4 s12 center-align">
-                        <button onClick={() => this.getCard(jugador.id)} className="waves-effect waves-light btn" disabled={credit === 100}>
+                        <button onClick={() => this.getCard(jugador.id)} className="waves-effect waves-light btn"
+                                disabled={credit === 100}>
                             Pedir
                         </button>
                     </div>
