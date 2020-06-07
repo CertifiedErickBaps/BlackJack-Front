@@ -16,7 +16,6 @@ class Card extends Component {
 
     componentDidMount() {
         const {visible} = this.props
-        console.log(visible);
 
         if (visible != null) {
             let {value, visible} = this.props

@@ -14,12 +14,11 @@ class Naipes extends Component {
             right_card: 3,
             bet: "",
             credit: 100,
-            score_jugador: 0,
-            score_casa: 0,
         }
 
     }
 
+    /** <---- Manejadores ----> */
 
     /** Evento para obtener el input del usuario */
     handleInputBet = (evt) => {
@@ -36,26 +35,104 @@ class Naipes extends Component {
 
         if (bet >= credit) swal('¡Ops!', 'No puedes apostar un monto mayor al crédito', 'error')
         else if (bet < 0) swal('¡Ops!', 'No puedes ingresar número negativo', 'error')
-        else {
-            const {jugador} = this.props
-
-            Axios.post(`http://${process.env.REACT_APP_LOCALHOST}/apostar`, {
-                id: jugador.id,
-                cantidad: bet
-            }).then((res) => {
-                this.setState({credit: res.data.credito, bet: ""})
-            }).catch((err) => {
-                console.log(err)
-            })
-        }
-
+        else this.apostar()
     }
 
-    createCards = (rol, side) => {
+    /** <---- Peticiones ----> */
+
+    apostar = () => {
+        const {jugador} = this.props
+        const {bet} = this.state
+
+        Axios.post(`http://${process.env.REACT_APP_LOCALHOST}/apostar`, {
+            id: jugador.id,
+            cantidad: bet
+        }).then((res) => {
+            this.setState({credit: res.data.credito, bet: ""})
+        }).catch((err) => {
+            console.log(err)
+        })
+    }
+
+    evaluarMano = async (rolID) => {
+        let valor = -1
+
+        await Axios.post(`http://${process.env.REACT_APP_LOCALHOST}/evaluar-mano`, {
+            id: rolID
+        }).then((res) => {
+            valor = res.data.valor
+        }).catch((err) => {
+            console.log(err)
+        })
+
+        return valor
+    }
+
+    peticionPedir = async (rol, rolID) => {
+        let mano = []
+
+        await Axios.post(`http://${process.env.REACT_APP_LOCALHOST}/pedir`, {
+            id: rolID
+        }).then((res) => {
+            mano = res.data.mano
+        }).catch((err) => {
+            console.log(err)
+        })
+
+        return mano
+    }
+
+    evaluarManoCroupier = () => {
+        const {setHand} = this.props
+
+        Axios.get(`http://${process.env.REACT_APP_LOCALHOST}/evaluar-partida`).then((res) => {
+            setHand('croupier', res.data.mano)
+        }).catch((err) => {
+            console.log(err)
+        })
+    }
+
+    /** <---- Funciones ----> */
+
+    pedirCarta = (rol, rolID) => {
+        const {setHand} = this.props
+
+        if (rolID !== null) {
+            this.peticionPedir(rol, rolID).then((mano) => {
+
+                if (rol === 'jugador') {
+                    this.evaluarMano(rolID).then((valor) => {
+                        if (valor > 21) {
+                            swal("Oops perdiste!", 'Rebasaste la casa o tienes mas de 21 en tu mano qlo', 'error')
+                            this.evaluarManoCroupier()
+                        }
+                    })
+                } else {
+                    this.evaluarMano(rolID).then((valor) => {
+                        console.log(valor)
+                    })
+                }
+
+                setHand(rol, mano)
+            })
+        }
+    }
+
+    verificarCroupier = () => {
+        const {croupier} = this.props
+        const {scoreCasa} = this.state
+
+        if (scoreCasa <= 17) this.pedirCarta('croupier', croupier.id)
+        else this.evaluarManoCroupier()
+    }
+
+    /** <---- Componentes ----> */
+
+    crearCartas = (rol, side) => {
         let cartas
         if (rol != null) {
             let space = -3
-            console.log(rol);
+
             cartas = rol.mano.map((carta, i) => {
                 space += 3
                 return side ?
@@ -69,91 +146,23 @@ class Naipes extends Component {
         return cartas
     }
 
-    getScore = (rol, rolID) => {
-        if (rolID !== null) {
-            Axios.post(`http://${process.env.REACT_APP_LOCALHOST}/evaluar-mano`, {
-                id: rolID
-            }).then((res) => {
-                this.setState({[rol]: res.data.valor})
-                this.alertaPartida()
-            }).catch((err) => {
-                console.log(err)
-            })
-        }
-    }
-
-    getCard = (rol, rolID) => {
-        const {jugador, croupier, setPlayerHand, setCroupierHand} = this.props
-
-        if (rolID !== null) {
-            Axios.post(`http://${process.env.REACT_APP_LOCALHOST}/pedir`, {
-                id: rolID
-            }).then((res) => {
-                if (rol === "croupier") {
-                    // console.log("Agrega otra carta");
-                    setCroupierHand(res.data.mano)
-                    this.getScore('score_casa', croupier.id)
-                    this.getEvaluarPartida()
-                }
-                if (rol === "jugador") {
-                    setPlayerHand(res.data.mano)
-                    this.getScore('score_jugador', jugador.id)
-                }
-            }).catch((err) => {
-                console.log(err)
-            })
-        }
-    }
-
-    alertaPartida = () => {
-        const {score_jugador, score_casa} = this.state
-        const {croupier} = this.props;
-
-        if (score_casa <= 17) {
-            console.log("Es menor a 17")
-            this.getCard("croupier", croupier.id)
-        }
-
-        if (score_jugador > 21) {
-            swal("Oops perdiste!", 'Rebasaste la casa o tienes mas de 21 en tu mano qlo', 'error')
-        }
-    }
-
-    getEvaluarPartida = () => {
-        const {setCroupierHand} = this.props
-        Axios.get(`http://${process.env.REACT_APP_LOCALHOST}/evaluar-partida`)
-            .then((res) => {
-                setCroupierHand(res.data.mano)
-                console.log(res)
-            }).catch((err) => {
-            console.log(err)
-        })
-    }
-
-
     render() {
         const {jugador, croupier} = this.props
-        const {score_jugador, score_casa, credit, bet} = this.state
+        const {credit, bet} = this.state
 
         /** Izquierda es true y derecha es false */
-        let cartasJugador = this.createCards(jugador, false)
-        let cartasCroupier = this.createCards(croupier, true)
+        let cartasJugador = this.crearCartas(jugador, false)
+        let cartasCroupier = this.crearCartas(croupier, true)
 
         return (
             <>
                 <div className="wrapper">
-                    <div className="naipesL" onClick={() => this.getScore('score_casa', croupier.id)}>
+                    <div className="naipesL">
                         {cartasCroupier}
-                        <span className="casa">
-                            <h5>Score {score_casa}</h5>
-                        </span>
                     </div>
 
-                    <div className="naipesR" onClick={() => this.getScore('score_jugador', jugador.id)}>
+                    <div className="naipesR">
                         {cartasJugador}
-                        <span className="jugador">
-                            <h5>Score {score_jugador}</h5>
-                        </span>
                     </div>
                 </div>
                 <div className="container row">
@@ -174,14 +183,13 @@ class Naipes extends Component {
                         </button>
                     </div>
                     <div className="col m4 s12 center-align">
-                        <button onClick={() => this.getCard("jugador", jugador.id)}
-                                className="waves-effect waves-light btn"
+                        <button onClick={() => this.pedirCarta("jugador", jugador.id)} className="waves-effect waves-light btn"
                                 disabled={credit === 100}>
                             Pedir
                         </button>
                     </div>
                     <div className="col m4 s12 center-align">
-                        <button onClick={() => this.alertaPartida} className="waves-effect waves-light btn"
+                        <button onClick={() => this.verificarCroupier()} className="waves-effect waves-light btn"
                                 disabled={credit === 100}>
                             Plantarse
                         </button>

@@ -22,19 +22,11 @@ class Game extends Component {
         }
     }
 
-    setPlayerHand = (hand) => {
-        let copy = this.state.jugador;
-        copy.mano = hand;
+    setHand = (name, hand) => {
+        let copy = this.state[name]
+        copy.mano = hand
         this.setState({
-            jugador: copy
-        })
-    }
-
-    setCroupierHand = (hand) => {
-        let copy = this.state.croupier;
-        copy.mano = hand;
-        this.setState({
-            croupier: copy
+            [name]: copy
         })
     }
 
@@ -54,8 +46,7 @@ class Game extends Component {
         const naipesProps = {
             jugador: jugador_card,
             croupier: croupier_card,
-            setPlayerHand: this.setPlayerHand,
-            setCroupierHand: this.setCroupierHand,
+            setHand: this.setHand
         }
 
         return (
