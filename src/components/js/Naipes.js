@@ -55,12 +55,12 @@ class Naipes extends Component {
         let cartas
         if (rol != null) {
             let space = -3
-
+            console.log(rol);
             cartas = rol.mano.map((carta, i) => {
                 space += 3
                 return side ?
                     (<Card key={i} value={carta.carta} visible={carta.visible} style={{left: `${space}rem`}}
-                           styleCard={carta.visible ? "naipe-selectionL": "naipe-selectionL-hidden"}/>) :
+                           styleCard={carta.visible ? "naipe-selectionL" : "naipe-selectionL-hidden"}/>) :
                     (<Card key={i} value={carta.carta} visible={carta.visible} style={{right: `${space}rem`}}
                            styleCard="naipe-selectionR"/>)
             })
@@ -69,40 +69,53 @@ class Naipes extends Component {
         return cartas
     }
 
-    evaluarPartida = () => {
-        const {score_jugador} = this.state
-
-        if (score_jugador >= 21) {
-            swal("Oops perdiste!", 'Rebasaste la casa o tienes mas de 21 en tu mano qlo', 'error')
-        }
-    }
-
     getScore = (rol, rolID) => {
         if (rolID !== null) {
             Axios.post(`http://${process.env.REACT_APP_LOCALHOST}/evaluar-mano`, {
                 id: rolID
             }).then((res) => {
                 this.setState({[rol]: res.data.valor})
-                this.evaluarPartida()
+                this.alertaPartida()
             }).catch((err) => {
                 console.log(err)
             })
         }
     }
 
-    getCard = (rolID) => {
-        const {jugador, setPlayerHand, setCroupierHand} = this.props
+    getCard = (rol, rolID) => {
+        const {jugador, croupier, setPlayerHand, setCroupierHand} = this.props
 
         if (rolID !== null) {
             Axios.post(`http://${process.env.REACT_APP_LOCALHOST}/pedir`, {
                 id: rolID
             }).then((res) => {
-                setPlayerHand(res.data.mano)
-                this.getScore('score_jugador', jugador.id)
-                this.getEvaluarPartida()
+                if (rol === "croupier") {
+                    // console.log("Agrega otra carta");
+                    setCroupierHand(res.data.mano)
+                    this.getScore('score_casa', croupier.id)
+                    this.getEvaluarPartida()
+                }
+                if (rol === "jugador") {
+                    setPlayerHand(res.data.mano)
+                    this.getScore('score_jugador', jugador.id)
+                }
             }).catch((err) => {
                 console.log(err)
             })
+        }
+    }
+
+    alertaPartida = () => {
+        const {score_jugador, score_casa} = this.state
+        const {croupier} = this.props;
+
+        if (score_casa <= 17) {
+            console.log("Es menor a 17")
+            this.getCard("croupier", croupier.id)
+        }
+
+        if (score_jugador > 21) {
+            swal("Oops perdiste!", 'Rebasaste la casa o tienes mas de 21 en tu mano qlo', 'error')
         }
     }
 
@@ -161,13 +174,15 @@ class Naipes extends Component {
                         </button>
                     </div>
                     <div className="col m4 s12 center-align">
-                        <button onClick={() => this.getCard(jugador.id)} className="waves-effect waves-light btn"
+                        <button onClick={() => this.getCard("jugador", jugador.id)}
+                                className="waves-effect waves-light btn"
                                 disabled={credit === 100}>
                             Pedir
                         </button>
                     </div>
                     <div className="col m4 s12 center-align">
-                        <button className="waves-effect waves-light btn" disabled={credit === 100}>
+                        <button onClick={() => this.alertaPartida} className="waves-effect waves-light btn"
+                                disabled={credit === 100}>
                             Plantarse
                         </button>
                     </div>
