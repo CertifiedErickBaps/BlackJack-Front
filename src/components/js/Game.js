@@ -13,13 +13,34 @@ class Game extends Component {
             finalizar: 'deshabilitado',
             jugador: undefined,
             croupier: undefined,
-            multijugador: false
+            multijugador: false,
+            partida_finalizada: false
         }
 
     }
 
     reiniciarPartida = () => {
-        this.setState({finalizar: 'habilitado'})
+        this.setState({
+            finalizar: 'habilitado',
+            partida_finalizada: true
+        })
+    }
+
+    handleReiniciarPartida = () => {
+        this.setState({partida_finalizada: false})
+        Axios.get(`http://${process.env.REACT_APP_LOCALHOST}/reiniciar`).then((res) => {
+            console.log(res.data);
+            this.setState({
+                jugador: res.data.jugador,
+                croupier: res.data.croupier,
+                finalizar: 'habilitada'
+            })
+        }).catch(() => {
+            this.setState({
+                jugador: repartir.jugador,
+                croupier: repartir.croupier
+            })
+        })
     }
 
     componentDidMount() {
@@ -47,7 +68,7 @@ class Game extends Component {
     }
 
     render() {
-        const {jugador, croupier, multijugador, finalizar} = this.state
+        const {jugador, croupier, multijugador, finalizar, partida_finalizada} = this.state
 
         let exist = (rol) => {
             return rol != null
@@ -63,7 +84,8 @@ class Game extends Component {
             jugador: jugador_card,
             croupier: croupier_card,
             setHand: this.setHand,
-            reiniciarPartida: this.reiniciarPartida
+            reiniciarPartida: this.reiniciarPartida,
+            partida_finalizada: partida_finalizada,
         }
 
         return (
@@ -82,7 +104,9 @@ class Game extends Component {
 
                         </ul>
                         <ul id="nav-mobile" className="padding-right-1 right">
-                            <button className="waves-effect waves-light btn" disabled={finalizar === 'deshabilitado'}>
+                            <button
+                                onClick={() => this.handleReiniciarPartida()}
+                                className="waves-effect waves-light btn" disabled={finalizar === 'deshabilitado' || !partida_finalizada}>
                                 Seguir jugando
                             </button>
                         </ul>
