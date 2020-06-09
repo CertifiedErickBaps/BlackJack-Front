@@ -165,33 +165,35 @@ class Naipes extends Component {
         return (
             <>
                 <div className="wrapper">
+
                     <div className="naipesL">
+                        <h5 className="title-dealer white-text">Dealer</h5>
                         {cartasCroupier}
                     </div>
-
                     <div className="naipesR">
+                        <h5 className="title-jugador white-text">Jugador</h5>
                         {cartasJugador}
                     </div>
                 </div>
                 <div className="container row">
-                    <div className="col m4 s12 center-align">
-                        <h5>Creditos: {credit}$</h5>
+                    <div className="col l4 m12 s12 center-align">
+                        <h5 className="white-text">Creditos: {credit}$</h5>
                     </div>
-                    <div className="col m4 s12 center-align">
+                    <div className="col l4 m12 s12 center-align">
                         {partida_finalizada && (
                             <>
-                                <h5>Score final</h5>
+                                <h5 className="white-text">Score final</h5>
                                 <br/>
-                                <h6>{score_croupier}{" "} - {" "}{score_jugador}</h6>
+                                <h6 className="white-text">{score_croupier}{" "} - {" "}{score_jugador}</h6>
                             </>
                         )}
                     </div>
-                    <h5 className={partida_finalizada ? "col m4 s12 center-align" : "hide col m4 s12 center-align"}>
+                    <h5 className={partida_finalizada ? "col l4 m12 s12 center-align white-text" : "hide col m4 s12 center-align"}>
                         {winner}
                     </h5>
                 </div>
-                <div className="container row flex-align-center">
-                    <div className="col l4 m12 s12 flex-align-center">
+                <div className="container row flex-align-center-buttons">
+                    <div className="col l4 m12 s12 flex-align-center padding-button">
                         <div className="input-field">
                             <input value={bet} type="number" onChange={this.handleInputBet}/>
                         </div>
@@ -200,14 +202,14 @@ class Naipes extends Component {
                             Apostar
                         </button>
                     </div>
-                    <div className="col l4 m12 s12 center-align">
+                    <div className="col l4 m12 s12 center-align padding-button">
                         <button onClick={() => this.pedirCarta("jugador", jugador.id)}
                                 className="waves-effect waves-light btn"
                                 disabled={!inGame}>
                             Pedir
                         </button>
                     </div>
-                    <div className="col l4 m12 s12 center-align">
+                    <div className="col l4 m12 s12 center-align padding">
                         <button onClick={() => this.pedirCarta("croupier", croupier.id)}
                                 className="waves-effect waves-light btn"
                                 disabled={!inGame}>

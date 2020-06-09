@@ -1,5 +1,5 @@
 .wrapper {
-    height: 25rem;
+    height: 23rem;
     position: relative;
 }
 
@@ -138,4 +138,70 @@ section {
 .naipe-selectionR:hover {
     margin-right: 2rem;
     /*    transform: rotate(-18deg);*/
+}
+
+.title-dealer {
+    position: absolute;
+    left: 0rem;
+    top: -4rem;
+}
+
+.title-jugador {
+    position: absolute;
+    right: 0rem;
+    top: -4rem;
+}
+/* Para 960px */
+@media only screen and (max-width: 980px) and (min-width: 821px) {
+
+
+}
+
+/* Para 800px */
+@media only screen and (max-width: 820px) and (min-width: 621px) {
+    .wrapper {
+        height: 50rem;
+        position: relative;
+    }
+
+    .naipesR {
+        top: 30rem
+    }
+}
+/* Para 600px */
+@media only screen and (max-width: 620px) and (min-width: 501px) {
+    .wrapper {
+        height: 50rem;
+        position: relative;
+    }
+
+    .naipesR {
+        top: 30rem
+    }
+
+}
+
+/* Para 480px */
+@media only screen and (max-width: 500px) and (min-width: 341px) {
+    .wrapper {
+        height: 50rem;
+        position: relative;
+    }
+
+    .naipesR {
+        top: 30rem
+    }
+
+}
+
+/* Para 320px */
+@media only screen and (max-width: 340px) and (min-width: 5px)  {
+    .wrapper {
+        height: 50rem;
+        position: relative;
+    }
+
+    .naipesR {
+        top: 30rem
+    }
 }

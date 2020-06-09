@@ -31,3 +31,66 @@
 .padding-right-1 {
     padding-right: 1rem;
 }
+
+.flex-align-center-buttons {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+}
+
+.padding-button {
+    padding: 1.5rem !important;
+}
+
+/* Para 960px */
+@media only screen and (max-width: 980px) and (min-width: 821px) {
+    .font-button-text {
+        font-size: 1rem;
+    }
+
+}
+
+/* Para 800px */
+@media only screen and (max-width: 820px) and (min-width: 621px) {
+    .font-text {
+        font-size: 0.8rem;
+    }
+    .flex-align-center-buttons {
+        display: initial;
+    }
+}
+/* Para 600px */
+@media only screen and (max-width: 620px) and (min-width: 501px) {
+    .font-text {
+        font-size: 0.7rem;
+    }
+    .flex-align-center-buttons {
+        display: initial;
+
+    }
+
+}
+
+/* Para 480px */
+@media only screen and (max-width: 500px) and (min-width: 341px) {
+    .font-text {
+        font-size: 0.6rem;
+    }
+    .flex-align-center-buttons {
+        display: initial;
+
+    }
+
+}
+
+/* Para 320px */
+@media only screen and (max-width: 340px) and (min-width: 5px)  {
+    .font-text {
+        font-size: 0.5rem;
+    }
+    .flex-align-center-buttons {
+        display: initial;
+
+    }
+}

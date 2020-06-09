@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import {Link} from "react-router-dom";
 import Axios from 'axios'
 import logo from '../../img/logo-blackjack.png'
 import Naipes from './Naipes'
@@ -17,6 +18,10 @@ class Game extends Component {
             partida_finalizada: false
         }
 
+    }
+
+    salirDePartida = () => {
+        console.log("El usuario quiere terminar partida")
     }
 
     reiniciarPartida = () => {
@@ -90,7 +95,7 @@ class Game extends Component {
 
         return (
             <>
-                <div className="flex-align-center">
+                <div className="flex-align-center  hide-on-med-and-down">
                     <img src={logo} className="logo" alt=""/>
                 </div>
 
@@ -99,16 +104,29 @@ class Game extends Component {
                     <div className="nav-wrapper nav-color">
                         <ul id="nav-mobile" className="left">
                             <li>
-                                <a href="/">Jugadores en sala{' '}{jugadores}{' '}</a>
+                                <a className="font-text" href="/">Jugadores en sala{' '}{jugadores}{' '}</a>
                             </li>
 
                         </ul>
                         <ul id="nav-mobile" className="padding-right-1 right">
                             <button
                                 onClick={() => this.handleReiniciarPartida()}
-                                className="waves-effect waves-light btn" disabled={finalizar === 'deshabilitado' || !partida_finalizada}>
-                                Seguir jugando
+                                className="waves-effect waves-light btn"
+                                disabled={finalizar === 'deshabilitado' || !partida_finalizada}>
+                                <span className="font-text">
+                                    Seguir jugando
+                                </span>
                             </button>
+                        </ul>
+                        <ul id="nav-mobile" className="padding-right-1 right">
+                            <span
+                                className="waves-effect waves-light btn">
+                                <Link to="/">
+                                    <span className="font-text">
+                                        Terminar juego
+                                    </span>
+                                </Link>
+                            </span>
                         </ul>
 
 
