@@ -8,21 +8,28 @@ class Game extends Component {
 
     constructor(props) {
         super(props)
+
         this.state = {
-            finalizar: false,
+            finalizar: 'deshabilitado',
             jugador: undefined,
             croupier: undefined,
             multijugador: false
         }
+
+        Game.reiniciarPartida = Game.reiniciarPartida.bind(this)
+    }
+
+    static reiniciarPartida() {
+        this.setState({finalizar: 'habilitado'})
     }
 
     componentDidMount() {
-        // if (!Object.keys(this.state).length) {
         Axios.get(`http://${process.env.REACT_APP_LOCALHOST}/iniciar`).then((res) => {
             console.log(res.data);
             this.setState({
                 jugador: res.data.jugador,
                 croupier: res.data.croupier,
+                multijugador: this.props.location.multijugador === "true"
             })
         }).catch(() => {
             this.setState({
@@ -30,16 +37,7 @@ class Game extends Component {
                 croupier: repartir.croupier
             })
         })
-        // }
     }
-
-    // reiniciarPartida = (name, hand) => {
-    //     let copy = this.state[name]
-    //     copy.mano = hand
-    //     this.setState({
-    //         [name]: copy
-    //     })
-    // }
 
     setHand = (name, hand) => {
         let copy = this.state[name]
@@ -50,7 +48,6 @@ class Game extends Component {
     }
 
     render() {
-        console.log(this.props.location.state)
         const {jugador, croupier, multijugador, finalizar} = this.state
 
         let exist = (rol) => {
@@ -67,7 +64,7 @@ class Game extends Component {
             jugador: jugador_card,
             croupier: croupier_card,
             setHand: this.setHand,
-            // reiniciarPartida: this.reiniciarPartida
+            reiniciarPartida: this.reiniciarPartida
         }
 
         return (
@@ -86,8 +83,8 @@ class Game extends Component {
 
                         </ul>
                         <ul id="nav-mobile" className="padding-right-1 right">
-                            <button className="waves-effect waves-light btn" disabled={finalizar}>
-                                Reiniciar
+                            <button className="waves-effect waves-light btn" disabled={finalizar === 'deshabilitado'}>
+                                Seguir jugando
                             </button>
                         </ul>
 

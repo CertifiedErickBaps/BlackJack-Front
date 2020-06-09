@@ -52,19 +52,18 @@ class Login extends Component {
     }
 
     handleInput = (evt) => {
-
         evt.preventDefault()
         const {value, name} = evt.target
         this.setState({[name]: value})
-
     }
 
 
     render() {
-
         const {redirect, nombre, multijugador} = this.state
 
         let disabled = !nombre || !multijugador
+
+        console.log(multijugador)
 
         return (
             <>

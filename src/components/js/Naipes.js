@@ -3,6 +3,7 @@ import '../css/Naipes.css'
 import Card from './Card'
 import {apostar, evaluarMano, finalizarPartida, peticionPedir} from './Peticiones'
 import swal from 'sweetalert'
+import Game from './Game'
 
 class Naipes extends Component {
     constructor(props) {
@@ -56,6 +57,7 @@ class Naipes extends Component {
                             swal("Oops perdiste!", 'Rebasaste la casa o tienes mas de 21 en tu mano', 'error')
                             finalizarPartida().then(res => {
                                 setHand("croupier", res.data.croupier)
+                                Game.reiniciarPartida()
                                 this.setState({
                                     score_jugador: res.data.score_jugador,
                                     score_croupier: res.data.score_croupier,
@@ -80,6 +82,7 @@ class Naipes extends Component {
                             // console.log("Se finaliza partida")
                             finalizarPartida().then(res => {
                                 setHand("croupier", res.data.croupier)
+                                Game.reiniciarPartida()
                                 this.setState({
                                     score_jugador: res.data.score_jugador,
                                     score_croupier: res.data.score_croupier,
@@ -91,6 +94,7 @@ class Naipes extends Component {
                             // console.log("La casa tiene mas de 21, pierde")
                             finalizarPartida().then(res => {
                                 setHand("croupier", res.data.croupier)
+                                Game.reiniciarPartida()
                                 this.setState({
                                     score_jugador: res.data.score_jugador,
                                     score_croupier: res.data.score_croupier,

@@ -1,5 +1,6 @@
 import Axios from "axios";
 
+
 export const apostar = async (jugador, bet) => {
     let credit = 0;
     await Axios.post(`http://${process.env.REACT_APP_LOCALHOST}/apostar`, {
@@ -45,11 +46,13 @@ export const peticionPedir = async (rol, rolID) => {
 
 export const finalizarPartida = async () => {
     let partida = {}
+
     await Axios.get(`http://${process.env.REACT_APP_LOCALHOST}/evaluar-partida`).then((res) => {
         partida = res
     }).catch((err) => {
         console.log(err)
     })
+
     return partida
 }
 
