@@ -3,6 +3,7 @@ import '../css/Naipes.css'
 import Card from './Card'
 import {apostar, evaluarMano, finalizarPartida, peticionPedir} from './Peticiones'
 import swal from 'sweetalert'
+import {Redirect} from 'react-router-dom'
 
 class Naipes extends Component {
     constructor(props) {
@@ -17,7 +18,8 @@ class Naipes extends Component {
             score_jugador: 0,
             score_croupier: 0,
             inGame: false,
-            ganador: ""
+            ganador: "",
+            irMenu: false
         }
 
     }
@@ -37,7 +39,7 @@ class Naipes extends Component {
         const {credit, bet} = this.state
         const {jugador} = this.props
 
-        if (bet >= credit) swal('¡Ops!', 'No puedes apostar un monto mayor al crédito', 'error')
+        if (bet > credit) swal('¡Ops!', 'No puedes apostar un monto mayor al crédito', 'error')
         else if (bet < 0) swal('¡Ops!', 'No puedes ingresar número negativo', 'error')
         else {
             apostar(jugador, bet).then(res => {
@@ -54,78 +56,67 @@ class Naipes extends Component {
     /** <---- Funciones ----> */
 
     pedirCarta = (rol, rolID) => {
-        const {setHand, reiniciarPartida} = this.props
-
         if (rolID !== null) {
             peticionPedir(rol, rolID).then(mano => {
-                if (rol === 'jugador') {
-                    evaluarMano(rolID).then((valor) => {
-                        this.setState({score_jugador: valor})
-                        if (this.state.score_jugador > 21) {
-                            swal("Oops perdiste!", 'Rebasaste la casa o tienes mas de 21 en tu mano', 'error')
-                            finalizarPartida().then(res => {
-                                console.log(res.data)
-                                setHand("croupier", res.data.croupier)
-                                this.setState({
-                                    score_jugador: res.data.score_jugador,
-                                    score_croupier: res.data.score_croupier,
-                                    inGame: false,
-                                    ganador: res.data.ganador
-                                })
-                                reiniciarPartida()
-                            })
-                        }
-                    })
-                    setHand(rol, mano)
-                }
-                //La mano croupier, 2 score
-                if (rol === 'croupier') {
-                    evaluarMano(rolID).then((valor) => {
-                        this.setState({score_croupier: valor})
-                        console.log("valor", this.state.score_croupier)
-                        if (this.state.score_croupier < 17) {
-                            // console.log("La casa quiere pedir otra carta")
-                            setHand(rol, mano)
-                            peticionPedir(rol, rolID).then(mano => setHand(rol, mano))
-                        }
-                        if (this.state.score_croupier >= 17) {
-                            // console.log("Se finaliza partida")
-                            finalizarPartida().then(res => {
-                                setHand("croupier", res.data.croupier)
-                                this.setState({
-                                    score_jugador: res.data.score_jugador,
-                                    score_croupier: res.data.score_croupier,
-                                    inGame: false,
-                                    ganador: res.data.ganador
-                                })
-                                reiniciarPartida()
-                            })
-                        }
-                        if (this.state.score_croupier > 21) {
-                            // console.log("La casa tiene mas de 21, pierde")
-                            finalizarPartida().then(res => {
-                                setHand("croupier", res.data.croupier)
-                                this.setState({
-                                    score_jugador: res.data.score_jugador,
-                                    score_croupier: res.data.score_croupier,
-                                    inGame: false,
-                                    ganador: res.data.ganador
-                                })
-                                reiniciarPartida()
-                            })
-                        }
-                    })
-
-                }
-
+                if (rol === 'jugador') this.evaluarManoJugador(rol, rolID, mano)
+                else this.evaluarManoCroupier(rol, rolID, mano)
             })
         }
+    }
+
+    evaluarManoJugador = (rol, rolID, mano) => {
+        const {setHand} = this.props
+
+        evaluarMano(rolID).then((valor) => {
+            this.setState({score_jugador: valor})
+
+            if (this.state.score_jugador > 21) {
+                swal("Oops perdiste!", 'Rebasaste la casa o tienes mas de 21 en tu mano', 'error')
+                this.reiniciarEstados()
+            }
+        })
+
+        setHand(rol, mano)
+    }
+
+    evaluarManoCroupier = (rol, rolID) => {
+        const {setHand} = this.props
+
+        evaluarMano(rolID).then((valor) => {
+            this.setState({score_croupier: valor})
+
+            if (this.state.score_croupier < 17)
+                peticionPedir(rol, rolID).then(mano => setHand(rol, mano))
+
+            this.reiniciarEstados()
+        })
+    }
+
+    reiniciarEstados = () => {
+        const {setHand, reiniciarPartida} = this.props
+
+        finalizarPartida().then(res => {
+            this.setState({
+                score_jugador: res.data.score_jugador,
+                score_croupier: res.data.score_croupier,
+                inGame: false,
+                ganador: res.data.ganador,
+                credit: res.data.credito
+            })
+
+            if (res.data.credito === 0 && res.data.ganador === 'croupier')
+                swal('Oops!', 'Perdiste todo tu crédito', 'error').then(() => this.setState({irMenu: true}))
+
+            reiniciarPartida()
+            setHand("croupier", res.data.croupier)
+        })
     }
 
     /** <---- Componentes ----> */
 
     crearCartas = (rol, side) => {
         let cartas
+
         if (rol != null) {
             let space = -3
 
@@ -144,23 +135,13 @@ class Naipes extends Component {
 
     render() {
         const {jugador, croupier, partida_finalizada} = this.props
-        const {credit, bet, score_croupier, score_jugador, inGame, ganador} = this.state
+        const {credit, bet, score_croupier, score_jugador, inGame, ganador, irMenu} = this.state
 
-        console.log("Score jugador", score_jugador)
         /** Izquierda es true y derecha es false */
         let cartasJugador = this.crearCartas(jugador, false)
         let cartasCroupier = this.crearCartas(croupier, true)
 
-        let winner
-        if (ganador === "croupier") {
-            winner = (<>
-                <span>You lose</span>
-            </>)
-        } else {
-            winner = (<>
-                <span>You win</span>
-            </>)
-        }
+        let winner = (ganador === "croupier") ? <span>Perdiste</span> : <span>Ganaste</span>
 
         return (
             <>
@@ -218,7 +199,9 @@ class Naipes extends Component {
                     </div>
 
                 </div>
+                {irMenu && (<Redirect to="/"/>)}
             </>
+
         )
     }
 }

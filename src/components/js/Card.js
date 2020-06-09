@@ -8,31 +8,15 @@ class Card extends Component {
         super(props)
 
         this.state = {
-            palo: '',
-            valor: 0,
             red: true,
         }
     }
 
-    componentDidMount() {
-        const {visible} = this.props
-
-        if (visible != null) {
-            let {value, visible} = this.props
-
-            this.setState({
-                palo: value.charAt(0),
-                valor: value.substring(1, value.length),
-                visible: visible
-            })
-        }
-    }
-
     render() {
-        const {style, visible} = this.props
+        const {style, visible, styleCard, value} = this.props
+        const {red} = this.state
 
-        const {palo, valor, red} = this.state
-        const {styleCard} = this.props
+        const palo = value.charAt(0), valor = value.substring(1, value.length)
 
         let icon = palo === 'c' ? '♥' : palo === 'd' ? '♦' : palo === 'p' ? '♠' : '♣'
 
