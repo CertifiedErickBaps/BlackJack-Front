@@ -68,37 +68,37 @@ class Naipes extends Component {
                 }
                 //La mano croupier, 2 score
                 if (rol === 'croupier') {
-                    // evaluarMano(rolID).then((valor) => {
-                    //     this.setState({score_croupier: valor})
-                    //     console.log("valor", this.state.score_croupier)
-                    //     if (this.state.score_croupier < 17) {
-                    //         // console.log("La casa quiere pedir otra carta")
-                    //         setHand(rol, mano)
-                    //         peticionPedir(rol, rolID).then(mano => setHand(rol, mano))
-                    //     }
-                    //     if (this.state.score_croupier >= 17) {
-                    //         // console.log("Se finaliza partida")
-                    //         finalizarPartida().then(res => {
-                    //             setHand("croupier", res.data.croupier)
-                    //             this.setState({
-                    //                 score_jugador: res.data.score_jugador,
-                    //                 score_croupier: res.data.score_croupier,
-                    //                 partida_finalizada: true
-                    //             })
-                    //         })
-                    //     }
-                    //     if (this.state.score_croupier > 21) {
-                    //         // console.log("La casa tiene mas de 21, pierde")
-                    //         finalizarPartida().then(res => {
-                    //             setHand("croupier", res.data.croupier)
-                    //             this.setState({
-                    //                 score_jugador: res.data.score_jugador,
-                    //                 score_croupier: res.data.score_croupier,
-                    //                 partida_finalizada: true
-                    //             })
-                    //         })
-                    //     }
-                    // })
+                    evaluarMano(rolID).then((valor) => {
+                        this.setState({score_croupier: valor})
+                        console.log("valor", this.state.score_croupier)
+                        if (this.state.score_croupier < 17) {
+                            // console.log("La casa quiere pedir otra carta")
+                            setHand(rol, mano)
+                            peticionPedir(rol, rolID).then(mano => setHand(rol, mano))
+                        }
+                        if (this.state.score_croupier >= 17) {
+                            // console.log("Se finaliza partida")
+                            finalizarPartida().then(res => {
+                                setHand("croupier", res.data.croupier)
+                                this.setState({
+                                    score_jugador: res.data.score_jugador,
+                                    score_croupier: res.data.score_croupier,
+                                    partida_finalizada: true
+                                })
+                            })
+                        }
+                        if (this.state.score_croupier > 21) {
+                            // console.log("La casa tiene mas de 21, pierde")
+                            finalizarPartida().then(res => {
+                                setHand("croupier", res.data.croupier)
+                                this.setState({
+                                    score_jugador: res.data.score_jugador,
+                                    score_croupier: res.data.score_croupier,
+                                    partida_finalizada: true
+                                })
+                            })
+                        }
+                    })
 
                 }
 

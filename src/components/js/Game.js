@@ -8,7 +8,9 @@ class Game extends Component {
 
     constructor(props) {
         super(props)
-        this.state = {}
+        this.state = {
+            // finalizar_partida: false
+        }
     }
 
     componentDidMount() {
@@ -22,6 +24,12 @@ class Game extends Component {
         }
     }
 
+    // reiniciarPartida = (value) => {
+    //     this.setState({
+    //         finalizar_partida: value
+    //     })
+    // }
+
     setHand = (name, hand) => {
         let copy = this.state[name]
         copy.mano = hand
@@ -31,6 +39,7 @@ class Game extends Component {
     }
 
     render() {
+        // console.log(this.state.finalizar_partida)
         const {jugador, croupier, multijugador} = this.state
 
         let exist = (rol) => {
@@ -46,7 +55,7 @@ class Game extends Component {
         const naipesProps = {
             jugador: jugador_card,
             croupier: croupier_card,
-            setHand: this.setHand
+            setHand: this.setHand,
         }
 
         return (
