@@ -9,24 +9,35 @@ class Game extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            // finalizar_partida: false
+            finalizar: false,
+            jugador: undefined,
+            croupier: undefined,
+            multijugador: false
         }
     }
 
     componentDidMount() {
-        if (!Object.keys(this.state).length) {
-            Axios.get(`http://${process.env.REACT_APP_LOCALHOST}/iniciar`).then((res) => {
-                console.log(res.data);
-                this.setState(res.data)
-            }).catch(() => {
-                this.setState(repartir)
+        // if (!Object.keys(this.state).length) {
+        Axios.get(`http://${process.env.REACT_APP_LOCALHOST}/iniciar`).then((res) => {
+            console.log(res.data);
+            this.setState({
+                jugador: res.data.jugador,
+                croupier: res.data.croupier,
             })
-        }
+        }).catch(() => {
+            this.setState({
+                jugador: repartir.jugador,
+                croupier: repartir.croupier
+            })
+        })
+        // }
     }
 
-    // reiniciarPartida = (value) => {
+    // reiniciarPartida = (name, hand) => {
+    //     let copy = this.state[name]
+    //     copy.mano = hand
     //     this.setState({
-    //         finalizar_partida: value
+    //         [name]: copy
     //     })
     // }
 
@@ -39,8 +50,8 @@ class Game extends Component {
     }
 
     render() {
-        // console.log(this.state.finalizar_partida)
-        const {jugador, croupier, multijugador} = this.state
+        console.log(this.props.location.state)
+        const {jugador, croupier, multijugador, finalizar} = this.state
 
         let exist = (rol) => {
             return rol != null
@@ -56,6 +67,7 @@ class Game extends Component {
             jugador: jugador_card,
             croupier: croupier_card,
             setHand: this.setHand,
+            // reiniciarPartida: this.reiniciarPartida
         }
 
         return (
@@ -63,13 +75,23 @@ class Game extends Component {
                 <div className="flex-align-center">
                     <img src={logo} className="logo" alt=""/>
                 </div>
+
                 <nav>
+
                     <div className="nav-wrapper nav-color">
-                        <ul id="nav-mobile" className="left hide-on-med-and-down">
+                        <ul id="nav-mobile" className="left">
                             <li>
                                 <a href="/">Jugadores en sala{' '}{jugadores}{' '}</a>
                             </li>
+
                         </ul>
+                        <ul id="nav-mobile" className="padding-right-1 right">
+                            <button className="waves-effect waves-light btn" disabled={finalizar}>
+                                Reiniciar
+                            </button>
+                        </ul>
+
+
                     </div>
                 </nav>
                 <Naipes {...naipesProps}/>
