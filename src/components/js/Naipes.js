@@ -46,7 +46,7 @@ class Naipes extends Component {
     /** <---- Funciones ----> */
 
     pedirCarta = (rol, rolID) => {
-        const {setHand} = this.props
+        const {setHand, reiniciarPartida} = this.props
 
         if (rolID !== null) {
             peticionPedir(rol, rolID).then(mano => {
@@ -57,7 +57,7 @@ class Naipes extends Component {
                             swal("Oops perdiste!", 'Rebasaste la casa o tienes mas de 21 en tu mano', 'error')
                             finalizarPartida().then(res => {
                                 setHand("croupier", res.data.croupier)
-                                Game.reiniciarPartida()
+                                reiniciarPartida()
                                 this.setState({
                                     score_jugador: res.data.score_jugador,
                                     score_croupier: res.data.score_croupier,
@@ -82,7 +82,7 @@ class Naipes extends Component {
                             // console.log("Se finaliza partida")
                             finalizarPartida().then(res => {
                                 setHand("croupier", res.data.croupier)
-                                Game.reiniciarPartida()
+                                reiniciarPartida()
                                 this.setState({
                                     score_jugador: res.data.score_jugador,
                                     score_croupier: res.data.score_croupier,
@@ -94,7 +94,7 @@ class Naipes extends Component {
                             // console.log("La casa tiene mas de 21, pierde")
                             finalizarPartida().then(res => {
                                 setHand("croupier", res.data.croupier)
-                                Game.reiniciarPartida()
+                                reiniciarPartida()
                                 this.setState({
                                     score_jugador: res.data.score_jugador,
                                     score_croupier: res.data.score_croupier,

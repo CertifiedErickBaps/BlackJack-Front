@@ -16,10 +16,9 @@ class Game extends Component {
             multijugador: false
         }
 
-        Game.reiniciarPartida = Game.reiniciarPartida.bind(this)
     }
 
-    static reiniciarPartida() {
+    reiniciarPartida = () => {
         this.setState({finalizar: 'habilitado'})
     }
 
