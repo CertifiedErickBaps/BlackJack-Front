@@ -16,7 +16,8 @@ class Naipes extends Component {
             credit: 100,
             score_jugador: 0,
             score_croupier: 0,
-            inGame: false
+            inGame: false,
+            ganador: ""
         }
 
     }
@@ -63,13 +64,15 @@ class Naipes extends Component {
                         if (this.state.score_jugador > 21) {
                             swal("Oops perdiste!", 'Rebasaste la casa o tienes mas de 21 en tu mano', 'error')
                             finalizarPartida().then(res => {
+                                console.log(res.data)
                                 setHand("croupier", res.data.croupier)
-                                reiniciarPartida()
                                 this.setState({
                                     score_jugador: res.data.score_jugador,
                                     score_croupier: res.data.score_croupier,
-                                    inGame: false
+                                    inGame: false,
+                                    ganador: res.data.ganador
                                 })
+                                reiniciarPartida()
                             })
                         }
                     })
@@ -89,24 +92,26 @@ class Naipes extends Component {
                             // console.log("Se finaliza partida")
                             finalizarPartida().then(res => {
                                 setHand("croupier", res.data.croupier)
-                                reiniciarPartida()
                                 this.setState({
                                     score_jugador: res.data.score_jugador,
                                     score_croupier: res.data.score_croupier,
-                                    inGame: false
+                                    inGame: false,
+                                    ganador: res.data.ganador
                                 })
+                                reiniciarPartida()
                             })
                         }
                         if (this.state.score_croupier > 21) {
                             // console.log("La casa tiene mas de 21, pierde")
                             finalizarPartida().then(res => {
                                 setHand("croupier", res.data.croupier)
-                                reiniciarPartida()
                                 this.setState({
                                     score_jugador: res.data.score_jugador,
                                     score_croupier: res.data.score_croupier,
-                                    inGame: false
+                                    inGame: false,
+                                    ganador: res.data.ganador
                                 })
+                                reiniciarPartida()
                             })
                         }
                     })
@@ -139,18 +144,15 @@ class Naipes extends Component {
 
     render() {
         const {jugador, croupier, partida_finalizada} = this.props
-        const {credit, bet, score_croupier, score_jugador, inGame} = this.state
-        console.log("Partida iniciada", inGame)
+        const {credit, bet, score_croupier, score_jugador, inGame, ganador} = this.state
+
+        console.log("Score jugador", score_jugador)
         /** Izquierda es true y derecha es false */
         let cartasJugador = this.crearCartas(jugador, false)
         let cartasCroupier = this.crearCartas(croupier, true)
 
         let winner
-        if (score_jugador <= 21 && (score_jugador > score_croupier || score_jugador < score_croupier)) {
-            winner = (<>
-                <span>You win</span>
-            </>)
-        } else if (score_croupier <= 21 && score_croupier > score_jugador) {
+        if (ganador === "croupier") {
             winner = (<>
                 <span>You lose</span>
             </>)
@@ -189,7 +191,7 @@ class Naipes extends Component {
                     </h5>
                 </div>
                 <div className="container row flex-align-center">
-                    <div className="col m4 s12 flex-align-center">
+                    <div className="col l4 m12 s12 flex-align-center">
                         <div className="input-field">
                             <input value={bet} type="number" onChange={this.handleInputBet}/>
                         </div>
@@ -198,14 +200,14 @@ class Naipes extends Component {
                             Apostar
                         </button>
                     </div>
-                    <div className="col m4 s12 center-align">
+                    <div className="col l4 m12 s12 center-align">
                         <button onClick={() => this.pedirCarta("jugador", jugador.id)}
                                 className="waves-effect waves-light btn"
                                 disabled={!inGame}>
                             Pedir
                         </button>
                     </div>
-                    <div className="col m4 s12 center-align">
+                    <div className="col l4 m12 s12 center-align">
                         <button onClick={() => this.pedirCarta("croupier", croupier.id)}
                                 className="waves-effect waves-light btn"
                                 disabled={!inGame}>
