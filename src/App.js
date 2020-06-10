@@ -4,17 +4,8 @@ import 'materialize-css/dist/css/materialize.min.css'
 import './App.css'
 import Login from './components/js/Login'
 import Game from './components/js/Game'
+import WaitRoom from './components/js/WaitRoom'
 import Error404 from './components/js/Error404'
-
-function RoomGame(props) {
-
-    return (
-        <>
-            <div>Id de sala {props.id}</div>
-        </>
-    )
-
-}
 
 class App extends Component {
     render() {
@@ -23,10 +14,7 @@ class App extends Component {
                 <BrowserRouter>
                     <Switch>
                         <Route path="/" component={Login} exact />
-                        <Route
-                            path="/unirse-partida"
-                            render={() => <RoomGame id="1" />}
-                        />
+                        <Route path="/sala-espera" component={WaitRoom} exact/>
                         <Route path="/jugar-partida" component={Game} exact />
                         <Route component={Error404} />
                     </Switch>

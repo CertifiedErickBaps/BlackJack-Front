@@ -20,10 +20,6 @@ class Game extends Component {
 
     }
 
-    salirDePartida = () => {
-        console.log("El usuario quiere terminar partida")
-    }
-
     reiniciarPartida = () => {
         this.setState({
             finalizar: 'habilitado',
@@ -100,7 +96,6 @@ class Game extends Component {
                 </div>
 
                 <nav>
-
                     <div className="nav-wrapper nav-color">
                         <ul id="nav-mobile" className="left">
                             <li>
@@ -128,8 +123,6 @@ class Game extends Component {
                                 </Link>
                             </span>
                         </ul>
-
-
                     </div>
                 </nav>
                 <Naipes {...naipesProps}/>

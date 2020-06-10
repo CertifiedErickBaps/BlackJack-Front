@@ -14,6 +14,7 @@ class Login extends Component {
             nombre: '',
             multijugador: 'false',
             redirect: false,
+            redirectTo: ''
         }
 
     }
@@ -26,7 +27,6 @@ class Login extends Component {
     }
 
     loginUsuario = () => {
-
         /** Comunicacion con el servidor */
         const {nombre, multijugador} = this.state
 
@@ -34,21 +34,18 @@ class Login extends Component {
             nombre: nombre,
             multijugador: multijugador === 'true'
         }).then(() => {
-
-            this.setState({redirect: true})
-
+            this.setState({
+                redirect: true,
+                redirectTo: (multijugador === 'true') ? '/sala-espera' : '/jugar-partida'
+            })
         }).catch(() => {
-
             console.info('error conection with server, init debugging')
 
             this.setState({
                 nombre: 'SkDv',
                 redirect: true
             })
-
         })
-
-
     }
 
     handleInput = (evt) => {
@@ -59,7 +56,7 @@ class Login extends Component {
 
 
     render() {
-        const {redirect, nombre, multijugador} = this.state
+        const {redirect, nombre, multijugador, redirectTo} = this.state
 
         let disabled = !nombre || !multijugador
 
@@ -92,7 +89,7 @@ class Login extends Component {
                     </div>
                 </div>
                 {redirect && (<Redirect push to={{
-                    pathname: "/jugar-partida",
+                    pathname: redirectTo,
                     multijugador: multijugador
                 }}/>)}
             </>
