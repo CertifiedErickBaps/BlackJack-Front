@@ -98,3 +98,11 @@
 .has-margin-top {
     margin-top: 10em;
 }
+
+.has-margin-right {
+    margin-right: 0.5em;
+}
+
+.is-white {
+    color: white
+}

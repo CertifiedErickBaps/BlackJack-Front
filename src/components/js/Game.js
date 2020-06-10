@@ -15,7 +15,8 @@ class Game extends Component {
             jugador: undefined,
             croupier: undefined,
             multijugador: false,
-            partida_finalizada: false
+            partida_finalizada: false,
+            jugadores: []
         }
 
     }
@@ -29,6 +30,7 @@ class Game extends Component {
 
     handleReiniciarPartida = () => {
         this.setState({partida_finalizada: false})
+
         Axios.get(`http://${process.env.REACT_APP_LOCALHOST}/reiniciar`).then((res) => {
             console.log(res.data);
             this.setState({
@@ -46,11 +48,10 @@ class Game extends Component {
 
     componentDidMount() {
         Axios.get(`http://${process.env.REACT_APP_LOCALHOST}/iniciar`).then((res) => {
-            console.log(res.data);
             this.setState({
                 jugador: res.data.jugador,
                 croupier: res.data.croupier,
-                multijugador: this.props.location.multijugador === "true"
+                jugadores: res.data.jugadores
             })
         }).catch(() => {
             this.setState({
@@ -69,19 +70,23 @@ class Game extends Component {
     }
 
     render() {
-        const {jugador, croupier, multijugador, finalizar, partida_finalizada} = this.state
+        const {game} = this.props
+        const {jugador, croupier, jugadores, multijugador, finalizar, partida_finalizada} = this.state
 
         let exist = (rol) => {
             return rol != null
         }
 
-        let jugador_card = exist(jugador) ? jugador : null
+        let jugador_card = exist(jugador) ? jugador : jugadores
         let croupier_card = exist(croupier) ? croupier : null
 
-        let jugadores = multijugador ? (<span className="jugadores-number">2</span>) : (
-            <span className="jugadores-number">1</span>)
+        let numJugadores = multijugador
+            ? (<span className="jugadores-number">{jugador.length}</span>)
+            : (<span className="jugadores-number">1</span>)
 
         const naipesProps = {
+            nombre: game.nombre,
+            idJugador: game.idJugador,
             jugador: jugador_card,
             croupier: croupier_card,
             setHand: this.setHand,
@@ -99,9 +104,11 @@ class Game extends Component {
                     <div className="nav-wrapper nav-color">
                         <ul id="nav-mobile" className="left">
                             <li>
-                                <a className="font-text" href="/">Jugadores en sala{' '}{jugadores}{' '}</a>
+                                <a className="font-text" href="/">Jugadores en sala{' '}{numJugadores}{' '}</a>
                             </li>
-
+                            <li>
+                                <a className="font-text" href="/">Pin: {game.idPartida}</a>
+                            </li>
                         </ul>
                         <ul id="nav-mobile" className="padding-right-1 right">
                             <button

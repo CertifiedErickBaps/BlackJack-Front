@@ -4,7 +4,7 @@ import Axios from 'axios'
 import Materialize from "materialize-css"
 import '../css/Login.css'
 
-class Login extends Component {
+class Join extends Component {
 
     constructor(props) {
 
@@ -12,9 +12,9 @@ class Login extends Component {
 
         this.state = {
             nombre: '',
-            multijugador: 'false',
             redirect: false,
             redirectTo: '',
+            pin: ''
         }
 
     }
@@ -25,20 +25,29 @@ class Login extends Component {
     }
 
     /** Comunicacion con el servidor */
-    loginUsuario = () => {
-        const {configurarVistaJugador} = this.props
-        const {nombre, multijugador} = this.state
+    unirsePartida = () => {
+        const {actualizarSesionJugador} = this.props
+        const {nombre, pin} = this.state
 
-        Axios.post(`http://${process.env.REACT_APP_LOCALHOST}/crear-partida`, {
-            nombre: nombre,
-            multijugador: multijugador === 'true'
+        Axios({
+            method: 'post',
+            url: `http://${process.env.REACT_APP_LOCALHOST}/unirse-partida`,
+            data: {
+                nombre: nombre,
+                pin: pin
+            }
         }).then((res) => {
             this.setState({
                 redirect: true,
-                redirectTo: '/jugar-partida'
+                redirectTo: '/sala-espera'
             })
 
-            configurarVistaJugador(res.data.id_partida, res.data.id_jugador, nombre)
+            actualizarSesionJugador(res.data.id_jugador)
+        }).catch(() => {
+            this.setState({
+                redirect: true,
+                redirectTo: '/crear'
+            })
         })
     }
 
@@ -49,9 +58,9 @@ class Login extends Component {
     }
 
     render() {
-        const {redirect, nombre, multijugador, redirectTo} = this.state
+        const {redirect, nombre, pin, redirectTo} = this.state
 
-        let disabled = !nombre || !multijugador
+        let disabled = !pin || !nombre
 
         return (
             <>
@@ -65,17 +74,13 @@ class Login extends Component {
                         </div>
                         <div className="row">
                             <div className="input-field col s12">
-                                <select name="multijugador" onChange={this.handleInput}>
-                                    <option selected disabled>Choose your option</option>
-                                    <option value={true} className="white">Si</option>
-                                    <option value={false} className="red-text">No</option>
-                                </select>
-                                <label>Multijugador</label>
+                                <textarea name="pin" onChange={this.handleInput} className="materialize-textarea"/>
+                                <label htmlFor="textarea2">Pin</label>
                             </div>
                         </div>
                         <div className="row">
                             <button type="submit" disabled={disabled} className="waves-effect waves-light btn has-margin-right"
-                                    onClick={this.loginUsuario}>
+                                    onClick={this.unirsePartida}>
                                 Entrar
                             </button>
                             <a href="/" type="submit" className="waves-effect waves-light btn">
@@ -84,10 +89,10 @@ class Login extends Component {
                         </div>
                     </div>
                 </div>
-                {redirect && (<Redirect push to={redirectTo}/>)}
+                {redirect && (<Redirect to={redirectTo}/>)}
             </>
         )
     }
 }
 
-export default Login
+export default Join

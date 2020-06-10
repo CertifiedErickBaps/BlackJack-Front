@@ -134,12 +134,21 @@ class Naipes extends Component {
     }
 
     render() {
-        const {jugador, croupier, partida_finalizada} = this.props
+        const {jugador, croupier, partida_finalizada, nombre, idJugador} = this.props
         const {credit, bet, score_croupier, score_jugador, inGame, ganador, irMenu} = this.state
 
-        /** Izquierda es true y derecha es false */
-        let cartasJugador = this.crearCartas(jugador, false)
-        let cartasCroupier = this.crearCartas(croupier, true)
+        let cartasJugador, cartasCroupier
+
+        if (Array.isArray(jugador)) {
+            jugador.forEach((contendiente) => {
+                if (idJugador === contendiente.id)
+                    cartasJugador = this.crearCartas(contendiente, true)
+            })
+            cartasCroupier = this.crearCartas(croupier, true)
+        } else {
+            cartasJugador = this.crearCartas(jugador, false)
+            cartasCroupier = this.crearCartas(croupier, true)
+        }
 
         let winner = (ganador === "croupier") ? <span>Perdiste</span> : <span>Ganaste</span>
 
@@ -152,7 +161,7 @@ class Naipes extends Component {
                         {cartasCroupier}
                     </div>
                     <div className="naipesR">
-                        <h5 className="title-jugador white-text">Jugador</h5>
+                        <h5 className="title-jugador white-text">{nombre ? `${nombre}(${idJugador})` : 'Jugador'}</h5>
                         {cartasJugador}
                     </div>
                 </div>
