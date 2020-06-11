@@ -32,7 +32,6 @@ class Game extends Component {
         this.setState({partida_finalizada: false})
 
         Axios.get(`http://${process.env.REACT_APP_LOCALHOST}/reiniciar`).then((res) => {
-            console.log(res.data);
             this.setState({
                 jugador: res.data.jugador,
                 croupier: res.data.croupier,
@@ -47,18 +46,22 @@ class Game extends Component {
     }
 
     componentDidMount() {
-        Axios.get(`http://${process.env.REACT_APP_LOCALHOST}/iniciar`).then((res) => {
+        if (!this.props.game.jugador) {
+            if (!this.state.jugador && !this.state.croupier) {
+                Axios.get(`http://${process.env.REACT_APP_LOCALHOST}/iniciar`).then((res) => {
+                    this.setState({
+                        jugador: res.data.jugador,
+                        croupier: res.data.croupier
+                    })
+                })
+            }
+        } else {
+            console.log(this.props.jugador, this.props.croupier)
             this.setState({
-                jugador: res.data.jugador,
-                croupier: res.data.croupier,
-                jugadores: res.data.jugadores
+                jugador: this.props.jugador,
+                croupier: this.props.croupier
             })
-        }).catch(() => {
-            this.setState({
-                jugador: repartir.jugador,
-                croupier: repartir.croupier
-            })
-        })
+        }
     }
 
     setHand = (name, hand) => {
@@ -71,13 +74,14 @@ class Game extends Component {
 
     render() {
         const {game} = this.props
-        const {jugador, croupier, jugadores, multijugador, finalizar, partida_finalizada} = this.state
+        const {jugador, croupier, multijugador, finalizar, partida_finalizada} = this.state
+
 
         let exist = (rol) => {
             return rol != null
         }
 
-        let jugador_card = exist(jugador) ? jugador : jugadores
+        let jugador_card = exist(croupier) ? jugador : null
         let croupier_card = exist(croupier) ? croupier : null
 
         let numJugadores = multijugador
@@ -107,7 +111,7 @@ class Game extends Component {
                                 <a className="font-text" href="/">Jugadores en sala{' '}{numJugadores}{' '}</a>
                             </li>
                             <li>
-                                <a className="font-text" href="/">Pin: {game.idPartida}</a>
+                                <span className="font-text">Pin: {game.idPartida}</span>
                             </li>
                         </ul>
                         <ul id="nav-mobile" className="padding-right-1 right">

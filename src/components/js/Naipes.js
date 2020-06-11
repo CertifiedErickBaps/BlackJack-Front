@@ -137,18 +137,8 @@ class Naipes extends Component {
         const {jugador, croupier, partida_finalizada, nombre, idJugador} = this.props
         const {credit, bet, score_croupier, score_jugador, inGame, ganador, irMenu} = this.state
 
-        let cartasJugador, cartasCroupier
-
-        if (Array.isArray(jugador)) {
-            jugador.forEach((contendiente) => {
-                if (idJugador === contendiente.id)
-                    cartasJugador = this.crearCartas(contendiente, true)
-            })
-            cartasCroupier = this.crearCartas(croupier, true)
-        } else {
-            cartasJugador = this.crearCartas(jugador, false)
-            cartasCroupier = this.crearCartas(croupier, true)
-        }
+        let cartasJugador = this.crearCartas(jugador, false)
+        let cartasCroupier = this.crearCartas(croupier, true)
 
         let winner = (ganador === "croupier") ? <span>Perdiste</span> : <span>Ganaste</span>
 

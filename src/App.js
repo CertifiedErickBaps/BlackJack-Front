@@ -20,17 +20,21 @@ class App extends Component {
         }
     }
 
-    configurarVistaJugador = (idPartida, idJugador, nombre) => {
+    configurarVistaJugador = (idPartida, idJugador, nombre, jugador, croupier, jugadores) => {
         this.setState({
             idPartida: idPartida,
             idJugador: idJugador,
-            nombre: nombre
+            nombre: nombre,
+            jugador: jugador,
+            croupier: croupier,
+            jugadores: jugadores
         })
     }
 
+
     render() {
         let loginProps = {
-            configurarVistaJugador: this.configurarVistaJugador
+            configurarVistaJugador: this.configurarVistaJugador,
         }, gameProps = {
             game: this.state
         }
@@ -44,7 +48,9 @@ class App extends Component {
                                path="/crear"
                                component={() => <Login {...loginProps}/>}
                         />
-                        <Route exact path="/unirse" component={Join}/>}/>
+                        <Route exact
+                               path="/unirse"
+                               component={() => <Join {...loginProps}/>}/>}/>
                         <Route exact
                                path="/jugar-partida"
                                component={() => <Game {...gameProps}/>}

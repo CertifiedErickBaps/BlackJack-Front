@@ -14,7 +14,7 @@ class Join extends Component {
             nombre: '',
             redirect: false,
             redirectTo: '',
-            pin: ''
+            idPartida: ''
         }
 
     }
@@ -26,23 +26,25 @@ class Join extends Component {
 
     /** Comunicacion con el servidor */
     unirsePartida = () => {
-        const {actualizarSesionJugador} = this.props
-        const {nombre, pin} = this.state
+        const {configurarVistaJugador} = this.props
+        const {nombre, idPartida} = this.state
 
         Axios({
             method: 'post',
             url: `http://${process.env.REACT_APP_LOCALHOST}/unirse-partida`,
             data: {
                 nombre: nombre,
-                pin: pin
+                idPartida: idPartida
             }
         }).then((res) => {
+            const {id_partida, jugador, croupier, jugadores} = res.data
+
             this.setState({
                 redirect: true,
-                redirectTo: '/sala-espera'
+                redirectTo: '/jugar-partida'
             })
 
-            actualizarSesionJugador(res.data.id_jugador)
+            configurarVistaJugador(id_partida, jugador.id, nombre, jugador, croupier, jugadores)
         }).catch(() => {
             this.setState({
                 redirect: true,
@@ -58,9 +60,9 @@ class Join extends Component {
     }
 
     render() {
-        const {redirect, nombre, pin, redirectTo} = this.state
+        const {redirect, nombre, idPartida, redirectTo} = this.state
 
-        let disabled = !pin || !nombre
+        let disabled = !idPartida || !nombre
 
         return (
             <>
@@ -74,7 +76,7 @@ class Join extends Component {
                         </div>
                         <div className="row">
                             <div className="input-field col s12">
-                                <textarea name="pin" onChange={this.handleInput} className="materialize-textarea"/>
+                                <textarea name="idPartida" onChange={this.handleInput} className="materialize-textarea"/>
                                 <label htmlFor="textarea2">Pin</label>
                             </div>
                         </div>
