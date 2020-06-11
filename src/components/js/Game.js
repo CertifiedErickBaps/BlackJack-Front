@@ -17,6 +17,7 @@ class Game extends Component {
             multijugador: false,
             partida_finalizada: false,
             jugadores: [],
+            jugadorActual: ""
         }
 
     }
@@ -32,7 +33,7 @@ class Game extends Component {
         this.setState({partida_finalizada: false})
 
         Axios.get(`http://${process.env.REACT_APP_LOCALHOST}/reiniciar`).then((res) => {
-            // console.log(res.data)
+            // console.log("Peticion reiniciar partida", res.data)
             this.setState({
                 jugador: res.data.jugador,
                 croupier: res.data.croupier,
@@ -46,10 +47,19 @@ class Game extends Component {
         })
     }
 
-    pedirTurno = (idJugador) => {
+    primerTurno = (idJugador) => {
+        this.setState({
+            jugadorActual: idJugador
+        })
+    }
+
+    pedirTurno = () => {
         Axios.get(`http://${process.env.REACT_APP_LOCALHOST}/turno`)
             .then((res) => {
-                console.log(res.data)
+                this.setState({
+                    jugadorActual: res.data
+                })
+                console.log("Pedir turno peticion", res.data)
             }).catch((err) => {
             console.log(err)
         })
@@ -59,10 +69,12 @@ class Game extends Component {
         if (!this.props.game.jugador) {
             if (!this.state.jugador && !this.state.croupier) {
                 Axios.get(`http://${process.env.REACT_APP_LOCALHOST}/iniciar`).then((res) => {
+                    console.log(res.data)
                     this.setState({
                         jugador: res.data.jugador,
                         croupier: res.data.croupier
                     })
+
                 })
             }
         } else {
@@ -72,6 +84,14 @@ class Game extends Component {
                 croupier: this.props.game.croupier
             })
 
+        }
+
+        if (this.props.game.jugadores !== undefined) {
+            // console.log("Id de jugador en game", this.props.game.jugadores[0].id)
+            this.primerTurno(this.props.game.jugadores[0].id)
+        } else {
+            // console.log(game)
+            this.primerTurno(this.props.game.idJugador)
         }
     }
 
@@ -86,8 +106,8 @@ class Game extends Component {
 
     render() {
         const {game} = this.props
-        const {jugador, croupier, multijugador, finalizar, partida_finalizada} = this.state
-        // console.log("Props de game", game)
+        const {jugador, croupier, multijugador, finalizar, partida_finalizada, jugadorActual} = this.state
+        // console.log("Props de game", jugador)
 
         let exist = (rol) => {
             return rol != null
@@ -108,7 +128,8 @@ class Game extends Component {
             setHand: this.setHand,
             reiniciarPartida: this.reiniciarPartida,
             partida_finalizada: partida_finalizada,
-            pedirTurno: this.pedirTurno
+            pedirTurno: this.pedirTurno,
+            jugadorActual: jugadorActual
         }
 
         return (

@@ -37,7 +37,7 @@ export const peticionPedir = async (rol, rolID) => {
     await Axios.post(`http://${process.env.REACT_APP_LOCALHOST}/pedir`, {
         id: rolID
     }).then((res) => {
-        console.log("Peticion pedir con id", res.data, rolID)
+        // console.log("Peticion pedir con id", res.data, rolID)
         mano = res.data.mano
     }).catch((err) => {
         console.log(err)

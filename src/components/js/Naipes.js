@@ -37,7 +37,7 @@ class Naipes extends Component {
     /** Evento para restar al wallet */
     handleWallet = () => {
         const {credit, bet} = this.state
-        const {jugador} = this.props
+        const {jugador, idJugador, jugadorActual} = this.props
 
         if (bet > credit) swal('¡Ops!', 'No puedes apostar un monto mayor al crédito', 'error')
         else if (bet < 0) swal('¡Ops!', 'No puedes ingresar número negativo', 'error')
@@ -50,6 +50,9 @@ class Naipes extends Component {
                     }
                 )
             })
+            if(idJugador !== jugadorActual) {
+                swal('¡Ops!', 'Espera tu turno', 'error')
+            }
         }
     }
 
@@ -65,12 +68,15 @@ class Naipes extends Component {
     }
 
     evaluarManoJugador = (rol, rolID, mano) => {
-        const {setHand, jugador} = this.props
+        const {setHand, pedirTurno, jugadorActual} = this.props
 
         evaluarMano(rolID).then((valor) => {
             this.setState({score_jugador: valor})
+
             // console.log("score jugador", valor)
             if (this.state.score_jugador > 21) {
+                // pedirTurno(jugadorActual)
+                // pedirTurno(jugadorActual)
                 swal("Oops perdiste!", 'Rebasaste la casa o tienes mas de 21 en tu mano', 'error')
                 this.reiniciarEstados()
             }
@@ -95,8 +101,8 @@ class Naipes extends Component {
 
 
     reiniciarEstados = () => {
-        const {setHand, reiniciarPartida, jugador} = this.props
-
+        const {setHand, reiniciarPartida, jugador, pedirTurno} = this.props
+        pedirTurno()
         finalizarPartida(jugador.id).then(res => {
             // console.log(res.data)
             this.setState({
@@ -137,10 +143,10 @@ class Naipes extends Component {
     }
 
     render() {
-        const {jugador, croupier, partida_finalizada, nombre, idJugador, pedirTurno} = this.props
+        const {jugador, croupier, partida_finalizada, nombre, idJugador, jugadorActual} = this.props
         const {credit, bet, score_croupier, score_jugador, inGame, ganador, irMenu} = this.state
-        console.log("Pedir turno", pedirTurno())
-        // console.log("Jugador con id :", idJugador)
+        // console.log("Jugador actual en naipes",jugadorActual)
+        console.log("Jugador actual es igual al que tenemos", jugadorActual, idJugador,jugadorActual === idJugador)
         // console.log("Objeto del jugador", jugador)
         let cartasJugador = this.crearCartas(jugador, false)
         let cartasCroupier = this.crearCartas(croupier, true)
@@ -190,14 +196,15 @@ class Naipes extends Component {
                     <div className="col l4 m12 s12 center-align padding-button">
                         <button onClick={() => this.pedirCarta("jugador", jugador.id)}
                                 className="waves-effect waves-light btn"
-                                disabled={!inGame}>
+                                disabled={!inGame ||  jugadorActual !== idJugador}>
                             Pedir
                         </button>
                     </div>
                     <div className="col l4 m12 s12 center-align padding">
+
                         <button onClick={() => this.pedirCarta("croupier", croupier.id)}
                                 className="waves-effect waves-light btn"
-                                disabled={!inGame}>
+                                disabled={!inGame || jugadorActual !== idJugador}>
                             Plantarse
                         </button>
                     </div>
