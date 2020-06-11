@@ -53,6 +53,10 @@ class Game extends Component {
         })
     }
 
+    watchTurno = () => {
+        return this.state.jugadorActual
+    }
+
     pedirTurno = () => {
         Axios.get(`http://${process.env.REACT_APP_LOCALHOST}/turno`)
             .then((res) => {
@@ -129,7 +133,8 @@ class Game extends Component {
             reiniciarPartida: this.reiniciarPartida,
             partida_finalizada: partida_finalizada,
             pedirTurno: this.pedirTurno,
-            jugadorActual: jugadorActual
+            jugadorActual: jugadorActual,
+            watchTurno: this.watchTurno
         }
 
         return (

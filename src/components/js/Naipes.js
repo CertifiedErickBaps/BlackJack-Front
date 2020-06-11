@@ -37,7 +37,7 @@ class Naipes extends Component {
     /** Evento para restar al wallet */
     handleWallet = () => {
         const {credit, bet} = this.state
-        const {jugador, idJugador, jugadorActual} = this.props
+        const {jugador, idJugador, jugadorActual, watchTurno} = this.props
 
         if (bet > credit) swal('¡Ops!', 'No puedes apostar un monto mayor al crédito', 'error')
         else if (bet < 0) swal('¡Ops!', 'No puedes ingresar número negativo', 'error')
@@ -50,6 +50,7 @@ class Naipes extends Component {
                     }
                 )
             })
+            // console.log("Ver el turno por medio de apostar", watchTurno())
             if(idJugador !== jugadorActual) {
                 swal('¡Ops!', 'Espera tu turno', 'error')
             }
@@ -75,8 +76,6 @@ class Naipes extends Component {
 
             // console.log("score jugador", valor)
             if (this.state.score_jugador > 21) {
-                // pedirTurno(jugadorActual)
-                // pedirTurno(jugadorActual)
                 swal("Oops perdiste!", 'Rebasaste la casa o tienes mas de 21 en tu mano', 'error')
                 this.reiniciarEstados()
             }
@@ -162,7 +161,7 @@ class Naipes extends Component {
                         {cartasCroupier}
                     </div>
                     <div className="naipesR">
-                        <h5 className="title-jugador white-text">{nombre ? `${nombre}(${idJugador})` : 'Jugador'}</h5>
+                        <h5 className="title-jugador white-text">{nombre ? `${nombre}` : 'Jugador'}</h5>
                         {cartasJugador}
                     </div>
                 </div>
