@@ -51,6 +51,7 @@ class Login extends Component {
     render() {
         const {redirect, nombre, multijugador, redirectTo} = this.state
 
+        // console.log(multijugador)
         let disabled = !nombre || !multijugador
 
         return (

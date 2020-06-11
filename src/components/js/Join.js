@@ -27,8 +27,8 @@ class Join extends Component {
     /** Comunicacion con el servidor */
     unirsePartida = () => {
         const {configurarVistaJugador} = this.props
-        const {nombre, idPartida} = this.state
 
+        const {nombre, idPartida} = this.state
         Axios({
             method: 'post',
             url: `http://${process.env.REACT_APP_LOCALHOST}/unirse-partida`,
@@ -37,6 +37,7 @@ class Join extends Component {
                 idPartida: idPartida
             }
         }).then((res) => {
+            console.log(res.data)
             const {id_partida, jugador, croupier, jugadores} = res.data
 
             this.setState({

@@ -65,18 +65,18 @@ class Naipes extends Component {
     }
 
     evaluarManoJugador = (rol, rolID, mano) => {
-        const {setHand} = this.props
+        const {setHand, jugador} = this.props
 
         evaluarMano(rolID).then((valor) => {
             this.setState({score_jugador: valor})
-
+            // console.log("score jugador", valor)
             if (this.state.score_jugador > 21) {
                 swal("Oops perdiste!", 'Rebasaste la casa o tienes mas de 21 en tu mano', 'error')
                 this.reiniciarEstados()
             }
         })
-
         setHand(rol, mano)
+        // console.log("Mano evaluando", jugador)
     }
 
     evaluarManoCroupier = (rol, rolID) => {
@@ -92,10 +92,13 @@ class Naipes extends Component {
         })
     }
 
-    reiniciarEstados = () => {
-        const {setHand, reiniciarPartida} = this.props
 
-        finalizarPartida().then(res => {
+
+    reiniciarEstados = () => {
+        const {setHand, reiniciarPartida, jugador} = this.props
+
+        finalizarPartida(jugador.id).then(res => {
+            // console.log(res.data)
             this.setState({
                 score_jugador: res.data.score_jugador,
                 score_croupier: res.data.score_croupier,
@@ -134,9 +137,11 @@ class Naipes extends Component {
     }
 
     render() {
-        const {jugador, croupier, partida_finalizada, nombre, idJugador} = this.props
+        const {jugador, croupier, partida_finalizada, nombre, idJugador, pedirTurno} = this.props
         const {credit, bet, score_croupier, score_jugador, inGame, ganador, irMenu} = this.state
-
+        console.log("Pedir turno", pedirTurno())
+        // console.log("Jugador con id :", idJugador)
+        // console.log("Objeto del jugador", jugador)
         let cartasJugador = this.crearCartas(jugador, false)
         let cartasCroupier = this.crearCartas(croupier, true)
 

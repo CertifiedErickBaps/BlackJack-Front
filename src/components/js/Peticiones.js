@@ -7,6 +7,7 @@ export const apostar = async (jugador, bet) => {
         id: jugador.id,
         cantidad: bet
     }).then((res) => {
+        // console.log(res.data)
         credit = res.data.credito
         bet = ""
     }).catch((err) => {
@@ -36,6 +37,7 @@ export const peticionPedir = async (rol, rolID) => {
     await Axios.post(`http://${process.env.REACT_APP_LOCALHOST}/pedir`, {
         id: rolID
     }).then((res) => {
+        console.log("Peticion pedir con id", res.data, rolID)
         mano = res.data.mano
     }).catch((err) => {
         console.log(err)
@@ -44,10 +46,12 @@ export const peticionPedir = async (rol, rolID) => {
     return mano
 }
 
-export const finalizarPartida = async () => {
+export const finalizarPartida = async (idJugador) => {
     let partida = {}
 
-    await Axios.get(`http://${process.env.REACT_APP_LOCALHOST}/evaluar-partida`).then((res) => {
+    await Axios.post(`http://${process.env.REACT_APP_LOCALHOST}/evaluar-partida`, {id: idJugador})
+    .then((res) => {
+        // console.log(res)
         partida = res
     }).catch((err) => {
         console.log(err)
